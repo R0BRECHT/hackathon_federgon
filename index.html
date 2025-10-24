@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Federgon Examen Voorbereiding</title>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+    <div id="root"></div>
+    
+    <script type="text/babel">
+        const { useState } = React;
+
+        // Simple icon components
+        const CheckCircle = ({ size = 24, className = "" }) => (
+            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={className}>
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+            </svg>
+        );
+
+        const XCircle = ({ size = 24, className = "" }) => (
+            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={className}>
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="15" y1="9" x2="9" y2="15"></line>
+                <line x1="9" y1="9" x2="15" y2="15"></line>
+            </svg>
+        );
+
+        const AlertCircle = ({ size = 24, className = "" }) => (
+            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={className}>
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="12"></line>
+                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+        );
+
+        const BookOpen = ({ size = 24, className = "" }) => (
+            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={className}>
+                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+            </svg>
+        );
+
+        const Target = ({ size = 24, className = "" }) => (
+            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={className}>
+                <circle cx="12" cy="12" r="10"></circle>
+                <circle cx="12" cy="12" r="6"></circle>
+                <circle cx="12" cy="12" r="2"></circle>
+            </svg>
+        );
+
+        const TrendingUp = ({ size = 24, className = "" }) => (
+            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={className}>
+                <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+                <polyline points="17 6 23 6 23 12"></polyline>
+            </svg>
+        );
+
+        // Simple bar chart component (no external dependencies)
+        const SimpleBarChart = ({ data }) => {
+            const maxValue = 100;
+            
+            return (
+                <div className="w-full">
+                    {data.map((item, index) => (
+                        <div key={index} className="mb-4">
+                            <div className="flex items-center justify-between mb-1">
+                                <span className="text-sm font-medium text-gray-700">{item.name}</span>
+                                <span className="text-sm text-gray-600">{item.score}%</span>
+                            </div>
+                            <div className="w-full bg-gray-200 rounded-full h-6 relative overflow-hidden">
+                                <div 
+                                    className="bg-blue-500 h-6 rounded-full transition-all duration-500"
+                                    style={{ width: `${item.score}%` }}
+                                ></div>
+                                <div 
+                                    className="absolute top-0 h-6 border-l-2 border-green-600"
+                                    style={{ left: '75%' }}
+                                    title="Slagingsgrens: 75%"
+                                ></div>
+                            </div>
+                            <div className="flex justify-between text-xs text-gray-500 mt-1">
+                                <span>0%</span>
+                                <span className="text-green-600">↑ 75% vereist</span>
+                                <span>100%</span>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            );
+        };
+
+        const FedergonExamPrep = () => {
+            const [currentView, setCurrentView] = useState('dashboard');
+            const [currentQuestion, setCurrentQuestion] = useState(0);
+            const [selectedAnswer, setSelectedAnswer] = useState(null);
+            const [showFeedback, setShowFeedback] = useState(false);
+            const [quizMode, setQuizMode] = useState(null);
+            const [performance, setPerformance] = useState({
+                socialeLegislation: { correct: 0, total: 0 },
+                preventiebeleid: { correct: 0, total: 0 },
+                arbeidsvoorwaarden: { correct: 0, total: 0 },
+                dimona: { correct: 0, total: 0 },
+                veiligheid: { correct: 0, total: 0 }
+            });
+
+            // Complete question bank - 90 questions
+            const questionBank = [
+                {id:1,topic:'socialeLegislation',subtopic:'arbeidsvoorwaarden',question:'Wat is de minimale opzegtermijn voor een uitzendovereenkomst van bepaalde duur?',options:['Geen opzegtermijn','3 dagen','7 dagen','14 dagen'],correct:0,explanation:'Voor uitzendovereenkomsten van bepaalde duur is er geen opzegtermijn vereist, tenzij anders overeengekomen in het contract.'},
+                {id:2,topic:'socialeLegislation',subtopic:'dimona',question:'Wanneer moet een DIMONA-aangifte gebeuren voor een uitzendkracht?',options:['Op het moment van tewerkstelling','Uiterlijk de dag vóór de tewerkstelling','Binnen 24 uur na de start','Binnen de week'],correct:1,explanation:'De DIMONA-aangifte moet gebeuren uiterlijk de dag vóór de effectieve tewerkstelling van de uitzendkracht.'},
+                {id:3,topic:'socialeLegislation',subtopic:'arbeidsvoorwaarden',question:'Welk percentage moet een uitzendkracht minimaal verdienen t.o.v. een vast personeelslid in dezelfde functie?',options:['80%','90%','95%','100%'],correct:3,explanation:'Uitzendkrachten hebben recht op gelijke behandeling en moeten dus 100% van het loon verdienen dat een vast personeelslid in dezelfde functie zou krijgen.'},
+                {id:4,topic:'socialeLegislation',subtopic:'arbeidsvoorwaarden',question:'Hoeveel opeenvolgende uitzendovereenkomsten van bepaalde duur mogen er maximaal zijn bij dezelfde gebruiker?',options:['2 overeenkomsten','3 overeenkomsten','4 overeenkomsten','Onbeperkt'],correct:2,explanation:'Er mogen maximaal 4 opeenvolgende uitzendovereenkomsten van bepaalde duur zijn bij dezelfde gebruiker, daarna moet het een contract van onbepaalde duur worden.'},
+                {id:5,topic:'socialeLegislation',subtopic:'arbeidsvoorwaarden',question:'Wie betaalt het loon van een uitzendkracht?',options:['De gebruiker','Het uitzendkantoor','De RSZ','Beiden samen'],correct:1,explanation:'Het uitzendkantoor is de werkgever en betaalt het loon aan de uitzendkracht.'},
+                {id:6,topic:'socialeLegislation',subtopic:'arbeidsvoorwaarden',question:'Een uitzendkracht werkt 3 maanden via opeenvolgende contracten. Heeft deze uitzendkracht recht op vakantiegeld?',options:['Nee, alleen vaste werknemers','Ja, maar alleen na 6 maanden','Ja, uitzendkrachten hebben dezelfde rechten','Alleen als dit in het contract staat'],correct:2,explanation:'Uitzendkrachten hebben recht op vakantiegeld volgens dezelfde regels als vaste werknemers.'},
+                {id:7,topic:'socialeLegislation',subtopic:'dimona',question:'Wat gebeurt er als een uitzendkantoor de DIMONA te laat indient?',options:['Niets, het is een aanbeveling','Een waarschuwing','Administratieve boetes kunnen worden opgelegd','Het contract wordt nietig'],correct:2,explanation:'Het niet of te laat indienen van een DIMONA kan leiden tot administratieve boetes.'},
+                {id:8,topic:'socialeLegislation',subtopic:'dimona',question:'Welke informatie moet minimaal in een DIMONA-aangifte staan?',options:['Alleen naam en rijksregisternummer','Identificatie werknemer, werkgever, begin- en einddatum','Volledige functieomschrijving','Alleen startdatum'],correct:1,explanation:'Een DIMONA bevat identificatie van werknemer en werkgever, begindatum en verwachte einddatum.'},
+                {id:9,topic:'socialeLegislation',subtopic:'arbeidsvoorwaarden',question:'Mag een uitzendkracht overuren presteren?',options:['Nee, nooit','Ja, onder dezelfde voorwaarden als vaste werknemers','Alleen met toestemming minister','Alleen in noodsituaties'],correct:1,explanation:'Uitzendkrachten kunnen overuren presteren onder dezelfde voorwaarden als vaste werknemers.'},
+                {id:10,topic:'socialeLegislation',subtopic:'arbeidsvoorwaarden',question:'Wanneer moet een uitzendkracht een schriftelijk arbeidscontract ontvangen?',options:['Binnen de week','Uiterlijk op de eerste werkdag','Binnen 2 werkdagen na aanvang','Voor de aanvang'],correct:2,explanation:'Het schriftelijk arbeidscontract moet binnen 2 werkdagen na aanvang worden bezorgd.'},
+                {id:11,topic:'socialeLegislation',subtopic:'arbeidsvoorwaarden',question:'Wat is de maximale duur van een uitzendopdracht voor hetzelfde werk bij dezelfde gebruiker?',options:['6 maanden','1 jaar','2 jaar','Er is geen maximum'],correct:2,explanation:'In principe is de maximumduur 2 jaar, met uitzonderingen afhankelijk van de reden.'},
+                {id:12,topic:'socialeLegislation',subtopic:'dimona',question:'Moet een DIMONA ook ingediend worden als de opdracht maar 1 dag duurt?',options:['Nee, alleen langer dan 1 week','Nee, alleen langer dan 1 maand','Ja, voor elke tewerkstelling','Alleen op vraag gebruiker'],correct:2,explanation:'Voor elke tewerkstelling moet een DIMONA worden ingediend, ook voor eendaagse opdrachten.'},
+                {id:25,topic:'socialeLegislation',subtopic:'arbeidsvoorwaarden',question:'Welke wettekst regelt de uitzendarbeid in België?',options:['De arbeidswet van 1971','Het KB van 24 juli 1987','De CAO nr. 108','De wet van 24 juli 1987 betreffende tijdelijke arbeid'],correct:3,explanation:'De wet van 24 juli 1987 betreffende de tijdelijke arbeid is de hoofdwet.'},
+                {id:26,topic:'socialeLegislation',subtopic:'arbeidsvoorwaarden',question:'In welke situaties mag uitzendarbeid worden ingezet?',options:['Alleen tijdelijke verhoging','Voor alle redenen','Vervanging, tijdelijke toename of uitzonderlijke opdrachten','Alleen langdurig zieke vervangen'],correct:2,explanation:'Uitzendarbeid mag voor vervanging, tijdelijke toename of uitzonderlijke opdrachten.'},
+                {id:27,topic:'socialeLegislation',subtopic:'arbeidsvoorwaarden',question:'Moet een motivering vermeld worden in het uitzendcontract?',options:['Nee, niet verplicht','Ja, de reden moet vermeld worden','Alleen bij contracten langer dan 6 maanden','Alleen als gebruiker vraagt'],correct:1,explanation:'Het uitzendcontract moet de wettelijke reden vermelden.'},
+                {id:28,topic:'socialeLegislation',subtopic:'arbeidsvoorwaarden',question:'Wat is de proefperiode bij een uitzendcontract van bepaalde duur korter dan 3 maanden?',options:['Geen proefperiode','Maximaal 2 dagen','Maximaal 3 dagen','Maximaal 7 dagen'],correct:2,explanation:'Voor contracten korter dan 3 maanden is de proefperiode maximaal 3 dagen.'},
+                {id:29,topic:'socialeLegislation',subtopic:'arbeidsvoorwaarden',question:'Wat is de proefperiode bij een uitzendcontract van 3 maanden of langer?',options:['Maximaal 3 dagen','Maximaal 7 dagen','Maximaal 14 dagen','Maximaal 1 maand'],correct:1,explanation:'Voor contracten van 3 maanden of langer is de proefperiode maximaal 7 dagen.'},
+                {id:30,topic:'socialeLegislation',subtopic:'arbeidsvoorwaarden',question:'Heeft een uitzendkracht recht op eindejaarspremie?',options:['Nee, alleen vaste werknemers','Ja, indien de gebruiker dit voorziet','Alleen na 1 jaar','Dit is optioneel'],correct:1,explanation:'Als de gebruiker eindejaarspremie geeft aan vast personeel, geldt dit ook voor uitzendkrachten.'},
+                {id:31,topic:'socialeLegislation',subtopic:'arbeidsvoorwaarden',question:'Mag een uitzendkantoor kosten aanrekenen aan een kandidaat-uitzendkracht?',options:['Ja, voor administratie','Ja, voor medische keuringen','Nee, dit is verboden','Alleen voor kledij'],correct:2,explanation:'Het is verboden om kosten aan te rekenen voor bemiddeling of selectie.'},
+                {id:32,topic:'socialeLegislation',subtopic:'dimona',question:'Wat betekent DIMONA?',options:['Dagelijkse Identificatie Medewerkers','Déclaration Immédiate/Onmiddellijke Aangifte','Digitale Melding Aanwerving','Document Identificatie Arbeid'],correct:1,explanation:'DIMONA staat voor Déclaration Immédiate/Onmiddellijke Aangifte.'},
+                {id:33,topic:'socialeLegislation',subtopic:'dimona',question:'Via welk systeem wordt DIMONA ingediend?',options:['Via post','Via e-mail naar RSZ','Via elektronisch platform van de RSZ','Via de gemeente'],correct:2,explanation:'DIMONA wordt elektronisch ingediend via het platform van de RSZ.'},
+                {id:34,topic:'socialeLegislation',subtopic:'dimona',question:'Wat moet er gebeuren als een uitzendopdracht vroegtijdig eindigt?',options:['Niets, originele blijft geldig','Een DIMONA-OUT moet ingediend worden','Een nieuwe DIMONA indienen','Alleen melden bij langer dan 1 week'],correct:1,explanation:'Bij voortijdige beëindiging moet een DIMONA-OUT worden ingediend.'},
+                {id:35,topic:'socialeLegislation',subtopic:'arbeidsvoorwaarden',question:'Wat is een uitzendcontract van onbepaalde duur?',options:['Een contract zonder einddatum','Een vast contract bij gebruiker','Een contract voor minstens 1 jaar','Dit bestaat niet'],correct:0,explanation:'Een uitzendcontract van onbepaalde duur heeft geen vooraf bepaalde einddatum.'},
+                {id:36,topic:'socialeLegislation',subtopic:'arbeidsvoorwaarden',question:'Wat is de opzegtermijn voor een uitzendcontract van onbepaalde duur?',options:['Geen opzegtermijn','3 dagen','7 dagen','Volgens normale opzegregels afhankelijk van anciënniteit'],correct:3,explanation:'Voor contracten van onbepaalde duur gelden de normale wettelijke opzegtermijnen.'},
+                {id:37,topic:'socialeLegislation',subtopic:'arbeidsvoorwaarden',question:'Moet een gebruiker een uitzendkracht informeren over vacatures?',options:['Nee, niet verplicht','Ja, indien minstens 6 maanden bij gebruiker','Alleen als uitzendkracht vraagt','Alleen voor leidinggevende functies'],correct:1,explanation:'Na 6 maanden moet de gebruiker uitzendkrachten informeren over vacatures.'},
+                {id:38,topic:'socialeLegislation',subtopic:'arbeidsvoorwaarden',question:'Heeft een uitzendkracht recht op vervoersvergoeding?',options:['Nee, niet verplicht','Ja, dezelfde regeling als vast personeel','Alleen boven 10 km','Alleen als in contract'],correct:1,explanation:'Volgens gelijkheidsbeginsel hebben uitzendkrachten recht op dezelfde vervoersvergoeding.'},
+                {id:39,topic:'socialeLegislation',subtopic:'arbeidsvoorwaarden',question:'Wat geldt er voor maaltijdcheques voor uitzendkrachten?',options:['Nooit recht op','Alleen na 1 jaar','Dezelfde rechten als vast personeel','Alleen voltijds'],correct:2,explanation:'Als de gebruiker maaltijdcheques geeft, moeten uitzendkrachten deze ook krijgen.'},
+                {id:40,topic:'socialeLegislation',subtopic:'arbeidsvoorwaarden',question:'Wie bepaalt de arbeidsuren en werkroosters van een uitzendkracht?',options:['Het uitzendkantoor','De uitzendkracht','De gebruiker','Samen afgesproken'],correct:2,explanation:'De gebruiker bepaalt de arbeidsuren omdat de uitzendkracht onder diens gezag werkt.'},
+                {id:41,topic:'socialeLegislation',subtopic:'arbeidsvoorwaarden',question:'Welke CAO is belangrijk voor de uitzendsector?',options:['CAO nr. 5','CAO nr. 38','CAO nr. 108','Geen specifieke CAO'],correct:2,explanation:'CAO nr. 108 bevat belangrijke regelingen voor uitzendarbeid.'},
+                {id:42,topic:'socialeLegislation',subtopic:'arbeidsvoorwaarden',question:'Mag een uitzendkracht deelnemen aan stakingsacties bij de gebruiker?',options:['Nee, verboden','Ja, zonder consequenties','Ja, maar contract mag beëindigd worden','Alleen met toestemming uitzendkantoor'],correct:2,explanation:'Een uitzendkracht mag deelnemen, maar dit kan reden zijn voor beëindiging.'},
+                {id:43,topic:'socialeLegislation',subtopic:'dimona',question:'Kan een DIMONA nog gewijzigd worden na indiening?',options:['Nee, nooit','Ja, tot de startdatum','Ja, maar alleen einddatum','Alleen met toestemming RSZ'],correct:1,explanation:'Een DIMONA kan gewijzigd worden vóór de startdatum.'},
+                {id:44,topic:'socialeLegislation',subtopic:'arbeidsvoorwaarden',question:'Hebben uitzendkrachten recht op dezelfde opleidingen als vast personeel?',options:['Nee, niet verplicht','Ja, indien noodzakelijk voor de functie','Alleen voor contracten langer dan 6 maanden','Alleen als uitzendkracht vraagt'],correct:1,explanation:'Uitzendkrachten hebben recht op opleidingen noodzakelijk voor de functie.'},
+                {id:45,topic:'socialeLegislation',subtopic:'arbeidsvoorwaarden',question:'Wat is een bijzonder motief voor uitzendarbeid?',options:['Elke reden die werkgever geeft','Specifieke wettelijke redenen zoals vervanging','Alleen vervanging zwangerschapsverlof','Geen bijzonder motief nodig'],correct:1,explanation:'Bijzondere motieven zijn de wettelijke redenen voor uitzendarbeid.'},
+                {id:46,topic:'socialeLegislation',subtopic:'arbeidsvoorwaarden',question:'Mag een minderjarige als uitzendkracht werken?',options:['Nee, nooit','Ja, vanaf 16 jaar met beperkingen','Ja, vanaf 15 jaar zonder beperkingen','Alleen tijdens vakanties'],correct:1,explanation:'Minderjarigen vanaf 16 jaar mogen werken, maar niet voor gevaarlijk werk.'},
+                {id:47,topic:'socialeLegislation',subtopic:'arbeidsvoorwaarden',question:'Wat gebeurt er na 4 opeenvolgende contracten van bepaalde duur?',options:['Er kan een 5e contract komen','Er moet 3 maanden pauze zijn','De 5e wordt automatisch van onbepaalde duur','Dit is niet toegestaan'],correct:2,explanation:'Na 4 opeenvolgende contracten wordt de volgende automatisch van onbepaalde duur.'},
+                {id:48,topic:'socialeLegislation',subtopic:'arbeidsvoorwaarden',question:'Moet een uitzendkantoor een erkenning hebben?',options:['Nee, iedereen mag uitzendarbeid organiseren','Ja, een erkenning van de federale overheid is verplicht','Alleen voor internationale uitzending','Alleen voor meer dan 10 uitzendkrachten'],correct:1,explanation:'Uitzendkantoren moeten erkend zijn door de FOD Werkgelegenheid.'},
+                
+                // Preventiebeleid questions
+                {id:13,topic:'preventiebeleid',subtopic:'veiligheid',question:'Wie is verantwoordelijk voor de risicoanalyse van de werkpost waar een uitzendkracht tewerkgesteld wordt?',options:['Het uitzendkantoor','De gebruiker','De uitzendkracht','Preventie en Interim'],correct:1,explanation:'De gebruiker is verantwoordelijk voor de risicoanalyse van de werkpost.'},
+                {id:14,topic:'preventiebeleid',subtopic:'veiligheid',question:'Wat is de rol van Preventie en Interim?',options:['Vervanger interne preventiedienst','Extra ondersteuning','Toezichthouder','Verplichte externe dienst voor uitzendkantoren'],correct:3,explanation:'Preventie en Interim is de verplichte externe dienst specifiek voor uitzendsector.'},
+                {id:15,topic:'preventiebeleid',subtopic:'veiligheid',question:'Welke informatie moet het uitzendkantoor aan de uitzendkracht geven vóór de tewerkstelling?',options:['Alleen het loon','De risicos en preventiemaatregelen','Alleen contactgegevens','Enkel de duur'],correct:1,explanation:'Het uitzendkantoor moet informeren over risicos en preventiemaatregelen.'},
+                {id:16,topic:'preventiebeleid',subtopic:'veiligheid',question:'Wie moet de uitzendkracht opleiden in het veilig uitvoeren van het werk?',options:['Alleen het uitzendkantoor','Alleen de gebruiker','Beide hebben hierin een rol','Preventie en Interim'],correct:2,explanation:'Beide partijen hebben een verantwoordelijkheid in opleiding.'},
+                {id:17,topic:'preventiebeleid',subtopic:'veiligheid',question:'Moet een gebruiker persoonlijke beschermingsmiddelen ter beschikking stellen aan uitzendkrachten?',options:['Nee, voor uitzendkantoor','Ja, net zoals voor eigen werknemers','Alleen bij lange opdrachten','Alleen op vraag'],correct:1,explanation:'De gebruiker moet PBM verstrekken zoals voor eigen personeel.'},
+                {id:18,topic:'preventiebeleid',subtopic:'veiligheid',question:'Moet een uitzendkracht een medisch onderzoek ondergaan voor aanvang van de tewerkstelling?',options:['Nee, nooit','Ja, altijd','Alleen voor risicovolle functies','Alleen bij opdrachten langer dan 3 maanden'],correct:2,explanation:'Een medisch onderzoek is verplicht voor risicovolle functies.'},
+                {id:19,topic:'preventiebeleid',subtopic:'veiligheid',question:'Wat gebeurt er als een uitzendkracht een arbeidsongeval heeft bij de gebruiker?',options:['Gebruiker moet melden','Het uitzendkantoor als werkgever moet aangifte doen','Uitzendkracht moet aanmelden','Preventie en Interim regelt'],correct:1,explanation:'Het uitzendkantoor als werkgever moet de aangifte doen.'},
+                {id:20,topic:'preventiebeleid',subtopic:'veiligheid',question:'Wie is aansprakelijk als een uitzendkracht een fout maakt die schade veroorzaakt?',options:['Altijd de uitzendkracht','Altijd het uitzendkantoor','Altijd de gebruiker','Afhankelijk van omstandigheden'],correct:3,explanation:'De aansprakelijkheid hangt af van verschillende factoren.'},
+                {id:21,topic:'preventiebeleid',subtopic:'veiligheid',question:'Mag een uitzendkracht alleen werken zonder toezicht op een gevaarlijke werkpost?',options:['Ja, als meerderjarig','Nee, nooit','Alleen na adequate opleiding','Alleen met toestemming Preventie en Interim'],correct:2,explanation:'Alleen werken mag na adequate opleiding en instructies.'},
+                {id:22,topic:'preventiebeleid',subtopic:'veiligheid',question:'Wat moet er gebeuren bij een bijna-ongeval (near miss)?',options:['Niets, geen schade','Enkel melden bij letsel','Rapporteren om herhaling te voorkomen','Alleen melden bij politie'],correct:2,explanation:'Bijna-ongevallen moeten gerapporteerd worden om herhaling te voorkomen.'},
+                {id:23,topic:'preventiebeleid',subtopic:'veiligheid',question:'Wie bepaalt of een werkpost geschikt is voor een uitzendkracht?',options:['Alleen de gebruiker','Alleen het uitzendkantoor','Preventie en Interim','Samen: gebruiker informeert, uitzendkantoor evalueert'],correct:3,explanation:'Gebruiker informeert, uitzendkantoor evalueert geschiktheid.'},
+                {id:24,topic:'preventiebeleid',subtopic:'veiligheid',question:'Heeft een uitzendkracht het recht om gevaarlijk werk te weigeren?',options:['Nee, nooit','Alleen als in contract','Ja, bij ernstig en onmiddellijk gevaar','Alleen na toestemming uitzendkantoor'],correct:2,explanation:'Werknemers hebben recht om werk te weigeren bij ernstig gevaar.'},
+                {id:49,topic:'preventiebeleid',subtopic:'veiligheid',question:'Wat is een risicoanalyse?',options:['Een jaarlijks rapport','Systematische identificatie en evaluatie van gevaren','Een medisch onderzoek','Een verzekeringsdocument'],correct:1,explanation:'Een risicoanalyse is systematische identificatie en evaluatie van gevaren.'},
+                {id:50,topic:'preventiebeleid',subtopic:'veiligheid',question:'Wie moet de veiligheidsuitrusting betalen voor een uitzendkracht?',options:['De uitzendkracht','Het uitzendkantoor','De gebruiker','Preventie en Interim'],correct:2,explanation:'De gebruiker moet PBM kosteloos ter beschikking stellen.'},
+                {id:51,topic:'preventiebeleid',subtopic:'veiligheid',question:'Wat is het doel van de wet op het welzijn van werknemers?',options:['Alleen ongevallen voorkomen','Het welzijn bevorderen op alle gebieden','Alleen technische veiligheid','Alleen ziektes voorkomen'],correct:1,explanation:'De welzijnswet bevordert welzijn op alle gebieden.'},
+                {id:52,topic:'preventiebeleid',subtopic:'veiligheid',question:'Wat is een preventieadviseur?',options:['Een verzekeringsconsulent','Een medewerker belast met preventiebeleid','Een externe inspecteur','Een medisch specialist'],correct:1,explanation:'Een preventieadviseur adviseert over preventiebeleid.'},
+                {id:53,topic:'preventiebeleid',subtopic:'veiligheid',question:'Moet een gebruiker een uitzendkracht toegang geven tot de bedrijfsarts?',options:['Nee, verantwoordelijkheid uitzendkantoor','Ja, voor alle medische aspecten','Alleen bij ongevallen','Alleen bij opdrachten langer dan 6 maanden'],correct:1,explanation:'Gebruiker moet toegang geven tot bedrijfsarts zoals voor eigen personeel.'},
+                {id:54,topic:'preventiebeleid',subtopic:'veiligheid',question:'Wat is een dynamisch risicobeheersingssysteem (DRBS)?',options:['Eenmalige risicoanalyse','Een continu proces van preventie','Een verzekeringssysteem','Een digitaal systeem'],correct:1,explanation:'Een DRBS is een continu proces van preventie en verbetering.'},
+                {id:55,topic:'preventiebeleid',subtopic:'veiligheid',question:'Wat moet er in een globaal preventieplan staan?',options:['Alleen naam preventieadviseur','Planning van preventieactiviteiten voor komende jaren','Alleen lijst ongevallen','Alleen budget'],correct:1,explanation:'Het globaal preventieplan bevat planning van preventieactiviteiten.'},
+                {id:56,topic:'preventiebeleid',subtopic:'veiligheid',question:'Wat is een jaarlijks actieplan?',options:['Vrijblijvende lijst','Gedetailleerde planning voor dat jaar','Alleen financieel overzicht','Rapport van vorig jaar'],correct:1,explanation:'Het jaarlijks actieplan is concrete uitwerking met specifieke activiteiten.'},
+                {id:57,topic:'preventiebeleid',subtopic:'veiligheid',question:'Moeten uitzendkrachten worden opgenomen in het preventiebeleid van de gebruiker?',options:['Nee, alleen onder uitzendkantoor','Ja, volledig zoals eigen werknemers','Alleen voor lange opdrachten','Dit is optioneel'],correct:1,explanation:'Uitzendkrachten moeten volledig opgenomen worden in preventiebeleid.'},
+                {id:58,topic:'preventiebeleid',subtopic:'veiligheid',question:'Wat is de hiërarchie van preventiemaatregelen?',options:['Eerst PBM, dan technisch','Eerst collectieve, dan individuele bescherming','Eerst opleiding, dan uitrusting','Alle gelijkwaardig'],correct:1,explanation:'De preventiehiërarchie: eerst collectieve, dan individuele bescherming.'},
+                {id:59,topic:'preventiebeleid',subtopic:'veiligheid',question:'Wat moet er gebeuren na een arbeidsongeval met een uitzendkracht?',options:['Alleen gebruiker rapporteert','Het uitzendkantoor doet aangifte','Alleen bij ziekenhuisopname','Uitzendkracht regelt zelf'],correct:1,explanation:'Het uitzendkantoor moet aangifte doen bij verzekeraar en instanties.'},
+                {id:60,topic:'preventiebeleid',subtopic:'veiligheid',question:'Binnen welke termijn moet een arbeidsongeval worden aangegeven?',options:['Binnen 24 uur','Binnen 3 werkdagen','Binnen 1 week','Binnen 1 maand'],correct:1,explanation:'Een arbeidsongeval moet binnen 3 werkdagen worden aangegeven.'},
+                {id:61,topic:'preventiebeleid',subtopic:'veiligheid',question:'Wat is een arbeidsongeval?',options:['Elk ongeval tijdens werkuren','Plotse gebeurtenis die letsel veroorzaakt tijdens werk','Alleen met machines','Alleen zware ongevallen'],correct:1,explanation:'Een arbeidsongeval is een plotse gebeurtenis die letsel veroorzaakt tijdens werk.'},
+                {id:62,topic:'preventiebeleid',subtopic:'veiligheid',question:'Is een verkeersongeval op weg naar het werk een arbeidsongeval?',options:['Nee, nooit','Ja, dit is een arbeidsongeval op de weg','Alleen met bedrijfswagen','Alleen tijdens werkuren'],correct:1,explanation:'Ongevallen op de weg naar en van het werk zijn arbeidsongevallen.'},
+                {id:63,topic:'preventiebeleid',subtopic:'veiligheid',question:'Wat is een beroepsziekte?',options:['Elke ziekte','Ziekte veroorzaakt door beroepsmatige blootstelling','Alleen kanker door werk','Stress-gerelateerd'],correct:1,explanation:'Een beroepsziekte wordt veroorzaakt door het beroep of werkomgeving.'},
+                {id:64,topic:'preventiebeleid',subtopic:'veiligheid',question:'Wie moet werkkleding verstrekken indien nodig?',options:['Uitzendkracht zelf','Het uitzendkantoor','De gebruiker indien voor eigen personeel ook','Preventie en Interim'],correct:2,explanation:'Als werkkleding verplicht is, moet gebruiker dit verstrekken zoals voor eigen personeel.'},
+                {id:65,topic:'preventiebeleid',subtopic:'veiligheid',question:'Wat is de rol van het Comité voor Preventie en Bescherming (CPBW)?',options:['Werknemers vertegenwoordigen in preventie','Beslissen over lonen','Werknemers ontslaan','Alleen ongevallen onderzoeken'],correct:0,explanation:'Het CPBW is overlegorgaan voor preventiebeleid en welzijn.'},
+                {id:66,topic:'preventiebeleid',subtopic:'veiligheid',question:'Mogen uitzendkrachten deelnemen aan het CPBW van de gebruiker?',options:['Nee, alleen vast personeel','Ja, indien voldoende lang bij gebruiker','Alleen als vertegenwoordiger','Dit is verboden'],correct:1,explanation:'Uitzendkrachten kunnen deelnemen indien structureel en lang tewerkgesteld.'},
+                {id:67,topic:'preventiebeleid',subtopic:'veiligheid',question:'Wat moet de gebruiker doen vóór een uitzendkracht start?',options:['Alleen loon bepalen','Werkpost evalueren en risico-info doorgeven','Arbeidscontract opstellen','Niets specifieks'],correct:1,explanation:'De gebruiker moet werkpost evalueren en risico-info doorgeven.'},
+                {id:68,topic:'preventiebeleid',subtopic:'veiligheid',question:'Wat is een veiligheidsinstructie?',options:['Algemeen document','Concrete aanwijzingen voor veilig werken','Een waarschuwingsbord','Een jaarlijks rapport'],correct:1,explanation:'Een veiligheidsinstructie geeft concrete aanwijzingen voor veilig werken.'},
+                {id:69,topic:'preventiebeleid',subtopic:'veiligheid',question:'Moet een uitzendkracht worden opgeleid voor het gebruik van arbeidsmiddelen?',options:['Nee, verondersteld','Ja, adequate opleiding verplicht','Alleen boven 10.000 euro','Alleen als gevaarlijk'],correct:1,explanation:'Voor elk arbeidsmiddel moet adequate opleiding gegeven worden.'},
+                {id:70,topic:'preventiebeleid',subtopic:'veiligheid',question:'Wat zijn psychosociale risicos op het werk?',options:['Alleen fysieke gevaren','Stress, pesten, geweld, burnout','Alleen verkeersongevallen','Financiële problemen'],correct:1,explanation:'Psychosociale risicos omvatten stress, pesten, geweld, burnout.'},
+                {id:71,topic:'preventiebeleid',subtopic:'veiligheid',question:'Heeft een uitzendkracht recht op ondersteuning bij psychosociale problemen?',options:['Nee, niet geregeld','Ja, via vertrouwenspersoon of preventieadviseur','Alleen na 1 jaar','Alleen voor vaste werknemers'],correct:1,explanation:'Uitzendkrachten hebben recht op ondersteuning via vertrouwenspersoon.'},
+                {id:72,topic:'preventiebeleid',subtopic:'veiligheid',question:'Wat is een gevaarlijk arbeidsmiddel volgens de wetgeving?',options:['Alleen explosieven','Machines die specifieke risicos inhouden en attest vereisen','Alle elektrische apparaten','Alleen industriële robots'],correct:1,explanation:'Gevaarlijke arbeidsmiddelen inhouden specifieke risicos en vereisen attest.'},
+                {id:73,topic:'preventiebeleid',subtopic:'veiligheid',question:'Mag een uitzendkracht werken met gevaarlijke machines zonder certificaat?',options:['Ja, met mondelinge instructie','Nee, geldig certificaat verplicht','Alleen onder toezicht','Toegestaan na 1 week ervaring'],correct:1,explanation:'Voor gevaarlijke arbeidsmiddelen is een geldig certificaat verplicht.'},
+                {id:74,topic:'preventiebeleid',subtopic:'veiligheid',question:'Wat moet er gebeuren bij blootstelling aan gevaarlijke stoffen?',options:['Niets speciaals','Registratie, opleiding en medische bewaking','Alleen handschoenen','Alleen ventileren'],correct:1,explanation:'Bij gevaarlijke stoffen is registratie, opleiding en medische bewaking verplicht.'},
+                {id:75,topic:'preventiebeleid',subtopic:'veiligheid',question:'Wat is een veiligheidsdatabank (SDS)?',options:['Lijst van ongevallen','Databank met personeelsgegevens','Document met veiligheidsinformatie over stoffen','Registratie werkuren'],correct:2,explanation:'Een SDS bevat veiligheidsinformatie over gevaarlijke stoffen.'},
+                {id:76,topic:'preventiebeleid',subtopic:'veiligheid',question:'Moet er arbeidsgeneeskundig toezicht zijn voor uitzendkrachten?',options:['Nee, optioneel','Ja, volgens dezelfde regels als vast personeel','Alleen voor voltijds','Alleen bij gezondheidsproblemen'],correct:1,explanation:'Arbeidsgeneeskundig toezicht is verplicht volgens dezelfde criteria.'},
+                {id:77,topic:'preventiebeleid',subtopic:'veiligheid',question:'Wat is een voorafgaand arbeidsgeneeskundig onderzoek?',options:['Vrijblijvende check','Verplicht onderzoek vóór risicovolle functies','Alleen een vragenlijst','Alleen boven 50 jaar'],correct:1,explanation:'Voor risicovolle functies is een voorafgaand onderzoek verplicht.'},
+                {id:78,topic:'preventiebeleid',subtopic:'veiligheid',question:'Wie betaalt voor het arbeidsgeneeskundig toezicht van een uitzendkracht?',options:['Uitzendkracht zelf','Het uitzendkantoor als werkgever','De gebruiker','Het ziekenfonds'],correct:1,explanation:'Het uitzendkantoor als werkgever draagt de kosten.'},
+                {id:79,topic:'preventiebeleid',subtopic:'veiligheid',question:'Wat is een werkpostfiche?',options:['Een loonstrook','Document met risicos en preventiemaatregelen van werkpost','Aanwezigheidsregistratie','Evaluatieformulier'],correct:1,explanation:'Een werkpostfiche beschrijft risicos en preventiemaatregelen van een werkpost.'},
+                {id:80,topic:'preventiebeleid',subtopic:'veiligheid',question:'Moet de gebruiker evacuatieoefeningen organiseren voor uitzendkrachten?',options:['Nee, niet nodig','Ja, uitzendkrachten moeten deelnemen','Alleen bij lange opdrachten','Dit is optioneel'],correct:1,explanation:'Uitzendkrachten moeten deelnemen aan evacuatieoefeningen.'},
+                {id:81,topic:'preventiebeleid',subtopic:'veiligheid',question:'Wat moet er gebeuren als een uitzendkracht een veiligheidsrisico opmerkt?',options:['Niets, niet zijn verantwoordelijkheid','Onmiddellijk melden aan hiërarchie','Alleen bij zeer gevaarlijk','Wachten tot ongeval'],correct:1,explanation:'Elke werknemer moet veiligheidsrisicos onmiddellijk melden.'},
+                {id:82,topic:'preventiebeleid',subtopic:'veiligheid',question:'Mag een zwangere uitzendkracht bepaalde taken weigeren?',options:['Nee, zwangerschap is geen reden','Ja, indien risicos voor moeder of kind','Alleen laatste maand','Alleen met doktersattest'],correct:1,explanation:'Zwangere vrouwen mogen taken met risicos weigeren.'},
+                {id:83,topic:'preventiebeleid',subtopic:'veiligheid',question:'Wat is ergonomie op het werk?',options:['Alleen hoogte bureaustoel','Het aanpassen van werk aan de mens','Alleen fysieke oefeningen','Ontwerp gebouwen'],correct:1,explanation:'Ergonomie richt zich op aanpassen van werk aan de mens.'},
+                {id:84,topic:'preventiebeleid',subtopic:'veiligheid',question:'Moet er een ongevallenregister bijgehouden worden?',options:['Nee, niet verplicht','Ja, alle arbeidsongevallen moeten geregistreerd worden','Alleen met ziekenhuisopname','Alleen dodelijke'],correct:1,explanation:'Elk arbeidsongeval moet geregistreerd worden.'},
+                {id:85,topic:'preventiebeleid',subtopic:'veiligheid',question:'Wat is een individuele fiche medische surveillance?',options:['Privédocument werknemer','Document waarin bedrijfsarts gegevens noteert','Formulier mutualiteit','Een loonstrook'],correct:1,explanation:'De fiche bevat medische gegevens en adviezen van de bedrijfsarts.'},
+                {id:86,topic:'preventiebeleid',subtopic:'veiligheid',question:'Wie heeft toegang tot het medisch dossier van een uitzendkracht?',options:['Iedereen in bedrijf','Alleen bedrijfsarts onder beroepsgeheim','Werkgever en leidinggevenden','Alle medewerkers'],correct:1,explanation:'Medische gegevens vallen onder medisch beroepsgeheim.'},
+                {id:87,topic:'preventiebeleid',subtopic:'veiligheid',question:'Wat betekent geschikt na een medisch onderzoek?',options:['Perfect gezond','In staat functie uit te voeren zonder gevaar','Niet ziek','Sportief'],correct:1,explanation:'Geschikt betekent functie uitvoeren zonder onverantwoorde risicos.'},
+                {id:88,topic:'preventiebeleid',subtopic:'veiligheid',question:'Mag een werkgever een ongeschikt verklaard persoon laten werken?',options:['Ja, met extra voorzorgen','Nee, dit is verboden','Alleen tijdelijk','Met schriftelijke toestemming'],correct:1,explanation:'Ongeschikt verklaard betekent niet tewerkstellen op die werkpost.'},
+                {id:89,topic:'preventiebeleid',subtopic:'veiligheid',question:'Wat is het verschil tussen interne en externe dienst voor preventie?',options:['Geen verschil','Interne binnen bedrijf, externe gespecialiseerde dienstverlener','Alleen grote bedrijven hebben intern','Externe is duurder'],correct:1,explanation:'Interne dienst is eigen personeel, externe is gespecialiseerde organisatie.'},
+                {id:90,topic:'preventiebeleid',subtopic:'veiligheid',question:'Waarom is Preventie en Interim specifiek belangrijk voor de uitzendsector?',options:['Dit is goedkoper','Verplichte externe dienst met kennis van uitzendarbeid','Vrijwillige vereniging','Alleen voor grote kantoren'],correct:1,explanation:'Preventie en Interim is sectorale externe dienst specifiek voor uitzendsector.'}
+            ];
+
+            const questions = {
+                socialeLegislation: questionBank.filter(q => q.topic === 'socialeLegislation'),
+                preventiebeleid: questionBank.filter(q => q.topic === 'preventiebeleid')
+            };
+
+            const allQuestions = questionBank;
+
+            const getAdaptiveQuestions = () => {
+                const weakTopics = Object.entries(performance)
+                    .filter(([_, data]) => data.total > 0 && (data.correct / data.total) < 0.75)
+                    .map(([topic, _]) => topic);
+
+                if (weakTopics.length === 0) return allQuestions;
+
+                const adaptiveQuestions = allQuestions.filter(q => 
+                    weakTopics.includes(q.subtopic) || Math.random() > 0.5
+                );
+
+                return adaptiveQuestions.length > 0 ? adaptiveQuestions : allQuestions;
+            };
+
+            const startQuiz = (mode) => {
+                setQuizMode(mode);
+                setCurrentQuestion(0);
+                setSelectedAnswer(null);
+                setShowFeedback(false);
+                setCurrentView('quiz');
+            };
+
+            const handleAnswerSelect = (answerIndex) => {
+                if (!showFeedback) setSelectedAnswer(answerIndex);
+            };
+
+            const handleSubmitAnswer = () => {
+                const activeQuestions = quizMode === 'adaptive' ? getAdaptiveQuestions() : 
+                                       quizMode === 'sociale' ? questions.socialeLegislation : 
+                                       questions.preventiebeleid;
+                
+                const question = activeQuestions[currentQuestion];
+                const isCorrect = selectedAnswer === question.correct;
+                
+                setPerformance(prev => ({
+                    ...prev,
+                    [question.topic]: {
+                        correct: prev[question.topic].correct + (isCorrect ? 1 : 0),
+                        total: prev[question.topic].total + 1
+                    },
+                    [question.subtopic]: {
+                        correct: (prev[question.subtopic]?.correct || 0) + (isCorrect ? 1 : 0),
+                        total: (prev[question.subtopic]?.total || 0) + 1
+                    }
+                }));
+                
+                setShowFeedback(true);
+            };
+
+            const handleNextQuestion = () => {
+                const activeQuestions = quizMode === 'adaptive' ? getAdaptiveQuestions() : 
+                                       quizMode === 'sociale' ? questions.socialeLegislation : 
+                                       questions.preventiebeleid;
+                
+                if (currentQuestion < activeQuestions.length - 1) {
+                    setCurrentQuestion(currentQuestion + 1);
+                    setSelectedAnswer(null);
+                    setShowFeedback(false);
+                } else {
+                    setCurrentView('results');
+                }
+            };
+
+            const getPerformanceData = () => {
+                return [
+                    { name: 'Arbeidsvoorwaarden', score: performance.arbeidsvoorwaarden.total > 0 ? Math.round((performance.arbeidsvoorwaarden.correct / performance.arbeidsvoorwaarden.total) * 100) : 0 },
+                    { name: 'DIMONA', score: performance.dimona.total > 0 ? Math.round((performance.dimona.correct / performance.dimona.total) * 100) : 0 },
+                    { name: 'Veiligheid', score: performance.veiligheid.total > 0 ? Math.round((performance.veiligheid.correct / performance.veiligheid.total) * 100) : 0 }
+                ];
+            };
+
+            const getOverallScore = (topic) => {
+                if (performance[topic].total === 0) return 0;
+                return Math.round((performance[topic].correct / performance[topic].total) * 100);
+            };
+
+            const renderDashboard = () => {
+                const socialeScore = getOverallScore('socialeLegislation');
+                const preventieScore = getOverallScore('preventiebeleid');
+                const performanceData = getPerformanceData();
+
+                return (
+                    <div className="p-6 max-w-6xl mx-auto">
+                        <div className="mb-8">
+                            <h1 className="text-3xl font-bold text-gray-800 mb-2">Federgon Examen Voorbereiding</h1>
+                            <p className="text-gray-600">Adaptieve studietool met 90 examenvragen</p>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                            <div className="bg-white rounded-lg shadow p-6 border-l-4 border-blue-500">
+                                <div className="flex items-center justify-between mb-2">
+                                    <h3 className="font-semibold text-gray-700">Sociale Wetgeving</h3>
+                                    <BookOpen size={24} className="text-blue-500" />
+                                </div>
+                                <div className="text-3xl font-bold text-gray-800">{socialeScore}%</div>
+                                <div className="text-sm text-gray-500 mt-1">
+                                    {performance.socialeLegislation.correct} / {performance.socialeLegislation.total} correct
+                                </div>
+                                {socialeScore >= 75 && performance.socialeLegislation.total > 0 && (
+                                    <div className="mt-2 text-green-600 text-sm font-medium flex items-center">
+                                        <CheckCircle size={16} className="mr-1" /> Klaar voor examen!
+                                    </div>
+                                )}
+                            </div>
+
+                            <div className="bg-white rounded-lg shadow p-6 border-l-4 border-green-500">
+                                <div className="flex items-center justify-between mb-2">
+                                    <h3 className="font-semibold text-gray-700">Preventiebeleid</h3>
+                                    <Target size={24} className="text-green-500" />
+                                </div>
+                                <div className="text-3xl font-bold text-gray-800">{preventieScore}%</div>
+                                <div className="text-sm text-gray-500 mt-1">
+                                    {performance.preventiebeleid.correct} / {performance.preventiebeleid.total} correct
+                                </div>
+                                {preventieScore >= 75 && performance.preventiebeleid.total > 0 && (
+                                    <div className="mt-2 text-green-600 text-sm font-medium flex items-center">
+                                        <CheckCircle size={16} className="mr-1" /> Klaar voor examen!
+                                    </div>
+                                )}
+                            </div>
+
+                            <div className="bg-white rounded-lg shadow p-6 border-l-4 border-purple-500">
+                                <div className="flex items-center justify-between mb-2">
+                                    <h3 className="font-semibold text-gray-700">Totaal Vragen</h3>
+                                    <TrendingUp size={24} className="text-purple-500" />
+                                </div>
+                                <div className="text-3xl font-bold text-gray-800">
+                                    {performance.socialeLegislation.total + performance.preventiebeleid.total}
+                                </div>
+                                <div className="text-sm text-gray-500 mt-1">
+                                    {performance.socialeLegislation.correct + performance.preventiebeleid.correct} correct beantwoord
+                                </div>
+                            </div>
+                        </div>
+
+                        {(performance.arbeidsvoorwaarden.total > 0 || performance.dimona.total > 0 || performance.veiligheid.total > 0) && (
+                            <div className="bg-white rounded-lg shadow p-6 mb-8">
+                                <h3 className="text-xl font-semibold text-gray-800 mb-4">Prestaties per Onderwerp</h3>
+                                <SimpleBarChart data={performanceData} />
+                            </div>
+                        )}
+
+                        {performanceData.some(d => d.score < 75 && d.score > 0) && (
+                            <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-8">
+                                <div className="flex items-start">
+                                    <AlertCircle size={20} className="text-yellow-600 mt-1 mr-3" />
+                                    <div>
+                                        <h4 className="font-semibold text-yellow-800 mb-1">Aandachtspunten</h4>
+                                        <p className="text-yellow-700 text-sm">
+                                            Focus op: {performanceData.filter(d => d.score < 75 && d.score > 0).map(d => d.name).join(', ')}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        <div className="bg-white rounded-lg shadow p-6">
+                            <h3 className="text-xl font-semibold text-gray-800 mb-4">Kies je Oefenmodus</h3>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <button onClick={() => startQuiz('adaptive')} className="p-6 border-2 border-blue-200 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-colors text-left">
+                                    <div className="font-semibold text-lg text-gray-800 mb-2">🎯 Adaptieve Modus</div>
+                                    <p className="text-sm text-gray-600">Focus automatisch op zwakke punten</p>
+                                </button>
+
+                                <button onClick={() => startQuiz('sociale')} className="p-6 border-2 border-green-200 rounded-lg hover:border-green-500 hover:bg-green-50 transition-colors text-left">
+                                    <div className="font-semibold text-lg text-gray-800 mb-2">📚 Sociale Wetgeving</div>
+                                    <p className="text-sm text-gray-600">48 vragen over Federgon examendeel</p>
+                                </button>
+
+                                <button onClick={() => startQuiz('preventie')} className="p-6 border-2 border-purple-200 rounded-lg hover:border-purple-500 hover:bg-purple-50 transition-colors text-left">
+                                    <div className="font-semibold text-lg text-gray-800 mb-2">🛡️ Preventiebeleid</div>
+                                    <p className="text-sm text-gray-600">42 vragen over Preventie en Interim deel</p>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div className="mt-8 bg-blue-50 rounded-lg p-6">
+                            <h4 className="font-semibold text-blue-900 mb-2">💡 Examenvereisten</h4>
+                            <ul className="text-sm text-blue-800 space-y-1">
+                                <li>• Minimaal 75% op beide examendelen (Federgon + Preventie en Interim)</li>
+                                <li>• Open boek examen: syllabus, slides en notities toegestaan</li>
+                                <li>• Geen oefenvragen of proefexamens tijdens het examen</li>
+                                <li>• Online afname via Evalbox platform</li>
+                            </ul>
+                        </div>
+                    </div>
+                );
+            };
+
+            const renderQuiz = () => {
+                const activeQuestions = quizMode === 'adaptive' ? getAdaptiveQuestions() : 
+                                       quizMode === 'sociale' ? questions.socialeLegislation : 
+                                       questions.preventiebeleid;
+                
+                const question = activeQuestions[currentQuestion];
+                const isCorrect = selectedAnswer === question.correct;
+
+                return (
+                    <div className="p-6 max-w-4xl mx-auto">
+                        <div className="mb-6">
+                            <button onClick={() => setCurrentView('dashboard')} className="text-blue-600 hover:text-blue-800 font-medium">
+                                ← Terug naar Dashboard
+                            </button>
+                        </div>
+
+                        <div className="bg-white rounded-lg shadow-lg p-8">
+                            <div className="mb-6">
+                                <div className="flex justify-between text-sm text-gray-600 mb-2">
+                                    <span>Vraag {currentQuestion + 1} van {activeQuestions.length}</span>
+                                    <span className="font-medium">
+                                        {quizMode === 'adaptive' ? '🎯 Adaptieve Modus' : 
+                                         quizMode === 'sociale' ? '📚 Sociale Wetgeving' : 
+                                         '🛡️ Preventiebeleid'}
+                                    </span>
+                                </div>
+                                <div className="w-full bg-gray-200 rounded-full h-2">
+                                    <div className="bg-blue-600 h-2 rounded-full transition-all duration-300" style={{ width: `${((currentQuestion + 1) / activeQuestions.length) * 100}%` }} />
+                                </div>
+                            </div>
+
+                            <div className="mb-6">
+                                <div className="text-sm text-gray-500 mb-2">
+                                    Onderwerp: {question.subtopic === 'arbeidsvoorwaarden' ? 'Arbeidsvoorwaarden' :
+                                               question.subtopic === 'dimona' ? 'DIMONA' :
+                                               question.subtopic === 'veiligheid' ? 'Veiligheid' : question.subtopic}
+                                </div>
+                                <h2 className="text-2xl font-semibold text-gray-800 mb-6">{question.question}</h2>
+                            </div>
+
+                            <div className="space-y-3 mb-6">
+                                {question.options.map((option, index) => (
+                                    <button
+                                        key={index}
+                                        onClick={() => handleAnswerSelect(index)}
+                                        disabled={showFeedback}
+                                        className={`w-full p-4 text-left rounded-lg border-2 transition-all ${
+                                            selectedAnswer === index
+                                                ? showFeedback
+                                                    ? index === question.correct
+                                                        ? 'border-green-500 bg-green-50'
+                                                        : 'border-red-500 bg-red-50'
+                                                    : 'border-blue-500 bg-blue-50'
+                                                : showFeedback && index === question.correct
+                                                ? 'border-green-500 bg-green-50'
+                                                : 'border-gray-300 hover:border-gray-400'
+                                        } ${showFeedback ? 'cursor-not-allowed' : 'cursor-pointer'}`}
+                                    >
+                                        <div className="flex items-center justify-between">
+                                            <span className="font-medium">{option}</span>
+                                            {showFeedback && index === question.correct && <CheckCircle size={24} className="text-green-600" />}
+                                            {showFeedback && selectedAnswer === index && index !== question.correct && <XCircle size={24} className="text-red-600" />}
+                                        </div>
+                                    </button>
+                                ))}
+                            </div>
+
+                            {showFeedback && (
+                                <div className={`p-4 rounded-lg mb-6 ${isCorrect ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200'}`}>
+                                    <div className="flex items-start mb-2">
+                                        {isCorrect ? <CheckCircle size={20} className="text-green-600 mr-2 mt-1" /> : <XCircle size={20} className="text-red-600 mr-2 mt-1" />}
+                                        <div>
+                                            <div className={`font-semibold ${isCorrect ? 'text-green-800' : 'text-red-800'}`}>
+                                                {isCorrect ? 'Correct!' : 'Niet correct'}
+                                            </div>
+                                            <p className={`text-sm mt-1 ${isCorrect ? 'text-green-700' : 'text-red-700'}`}>{question.explanation}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+
+                            <div className="flex justify-end space-x-3">
+                                {!showFeedback ? (
+                                    <button
+                                        onClick={handleSubmitAnswer}
+                                        disabled={selectedAnswer === null}
+                                        className={`px-6 py-3 rounded-lg font-medium ${selectedAnswer !== null ? 'bg-blue-600 text-white hover:bg-blue-700' : 'bg-gray-300 text-gray-500 cursor-not-allowed'}`}
+                                    >
+                                        Controleer Antwoord
+                                    </button>
+                                ) : (
+                                    <button onClick={handleNextQuestion} className="px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700">
+                                        {currentQuestion < activeQuestions.length - 1 ? 'Volgende Vraag →' : 'Bekijk Resultaten'}
+                                    </button>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                );
+            };
+
+            const renderResults = () => {
+                const socialeScore = getOverallScore('socialeLegislation');
+                const preventieScore = getOverallScore('preventiebeleid');
+                
+                return (
+                    <div className="p-6 max-w-4xl mx-auto">
+                        <div className="bg-white rounded-lg shadow-lg p-8">
+                            <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center">Quiz Voltooid!</h2>
+                            
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                                <div className="text-center p-6 bg-blue-50 rounded-lg">
+                                    <div className="text-4xl font-bold text-blue-600 mb-2">{socialeScore}%</div>
+                                    <div className="text-gray-700 font-medium">Sociale Wetgeving</div>
+                                    {socialeScore >= 75 ? (
+                                        <div className="mt-3 text-green-600 font-medium flex items-center justify-center">
+                                            <CheckCircle size={20} className="mr-2" /> Geslaagd!
+                                        </div>
+                                    ) : (
+                                        <div className="mt-3 text-yellow-600 font-medium">Blijf oefenen (75% vereist)</div>
+                                    )}
+                                </div>
+                                
+                                <div className="text-center p-6 bg-green-50 rounded-lg">
+                                    <div className="text-4xl font-bold text-green-600 mb-2">{preventieScore}%</div>
+                                    <div className="text-gray-700 font-medium">Preventiebeleid</div>
+                                    {preventieScore >= 75 ? (
+                                        <div className="mt-3 text-green-600 font-medium flex items-center justify-center">
+                                            <CheckCircle size={20} className="mr-2" /> Geslaagd!
+                                        </div>
+                                    ) : (
+                                        <div className="mt-3 text-yellow-600 font-medium">Blijf oefenen (75% vereist)</div>
+                                    )}
+                                </div>
+                            </div>
+
+                            <div className="text-center space-y-4">
+                                <button onClick={() => setCurrentView('dashboard')} className="px-8 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 mr-3">
+                                    Terug naar Dashboard
+                                </button>
+                                <button onClick={() => startQuiz(quizMode)} className="px-8 py-3 bg-gray-600 text-white rounded-lg font-medium hover:bg-gray-700">
+                                    Opnieuw Oefenen
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                );
+            };
+
+            return (
+                <div className="min-h-screen bg-gray-50">
+                    {currentView === 'dashboard' && renderDashboard()}
+                    {currentView === 'quiz' && renderQuiz()}
+                    {currentView === 'results' && renderResults()}
+                </div>
+            );
+        };
+
+        ReactDOM.render(React.createElement(FedergonExamPrep), document.getElementById('root'));
+    </script>
+</body>
+</html>
