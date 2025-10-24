@@ -11,38 +11,76 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <style>
         :root {
-            --primary: #003d7a;
-            --primary-light: #0052a3;
-            --accent: #00a3e0;
-            --accent-light: #33b8e6;
-            --success: #2d9f5c;
-            --warning: #ff9800;
-            --danger: #e74c3c;
-            --dark: #1a1a1a;
-            --light: #f8f9fa;
+            --synergie-red: #e2001a;
+            --synergie-blue-grey: #495d67;
+            --synergie-dark-grey: #2F3336;
+            --synergie-light-grey: #A5A5A5;
+            --synergie-white: #FFFFFF;
+            --synergie-black: #000000;
+            --synergie-yellow: #FFB400;
+            --synergie-turquoise: #2EC4B6;
+            --synergie-dark-blue: #222E50;
+        }
+        
+        * {
+            font-family: Tahoma, sans-serif;
         }
         
         body {
-            background-color: var(--light);
-            color: var(--dark);
+            background-color: var(--synergie-white);
+            color: var(--synergie-dark-grey);
         }
         
         .btn-primary {
-            background-color: var(--primary);
+            background-color: var(--synergie-red);
             color: white;
         }
         
         .btn-primary:hover {
-            background-color: var(--primary-light);
+            background-color: #c5001a;
         }
         
-        .btn-accent {
-            background-color: var(--accent);
+        .btn-secondary {
+            background-color: var(--synergie-blue-grey);
             color: white;
         }
         
+        .btn-secondary:hover {
+            background-color: var(--synergie-dark-grey);
+        }
+        
+        .btn-accent {
+            background-color: var(--synergie-yellow);
+            color: var(--synergie-dark-grey);
+            font-weight: 600;
+        }
+        
         .btn-accent:hover {
-            background-color: var(--accent-light);
+            background-color: #e6a300;
+        }
+        
+        .text-primary {
+            color: var(--synergie-red);
+        }
+        
+        .text-secondary {
+            color: var(--synergie-blue-grey);
+        }
+        
+        .bg-primary {
+            background-color: var(--synergie-red);
+        }
+        
+        .bg-secondary {
+            background-color: var(--synergie-blue-grey);
+        }
+        
+        .border-primary {
+            border-color: var(--synergie-red);
+        }
+        
+        .bg-gradient-synergie {
+            background: linear-gradient(135deg, var(--synergie-red) 0%, var(--synergie-blue-grey) 100%);
         }
     </style>
 </head>
@@ -183,10 +221,10 @@
 
             if (loading) {
                 return (
-                    <div className="h-full flex items-center justify-center bg-gray-100">
+                    <div className="h-full flex items-center justify-center" style={{ backgroundColor: '#f5f5f5' }}>
                         <div className="text-center">
-                            <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mb-3"></div>
-                            <p className="text-gray-600">PDF laden...</p>
+                            <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 mb-3" style={{ borderColor: '#e2001a' }}></div>
+                            <p style={{ color: '#495d67' }}>PDF laden...</p>
                         </div>
                     </div>
                 );
@@ -194,12 +232,12 @@
 
             return (
                 <div className="bg-white rounded-lg shadow-lg overflow-hidden flex flex-col h-full">
-                    <div className="bg-gradient-to-r from-blue-900 to-blue-700 p-4 flex items-center justify-between flex-wrap gap-2">
+                    <div className="bg-gradient-synergie p-4 flex items-center justify-between flex-wrap gap-2">
                         <div className="flex items-center gap-2">
                             <button
                                 onClick={goToPrevPage}
                                 disabled={currentPage === 1}
-                                className="px-3 py-2 bg-blue-600 text-white rounded disabled:bg-gray-600 hover:bg-blue-700 text-sm font-medium"
+                                className="px-3 py-2 btn-secondary text-white rounded disabled:opacity-50 hover:opacity-90 text-sm font-medium"
                             >
                                 ← Vorige
                             </button>
@@ -209,7 +247,7 @@
                             <button
                                 onClick={goToNextPage}
                                 disabled={currentPage === totalPages}
-                                className="px-3 py-2 bg-blue-600 text-white rounded disabled:bg-gray-600 hover:bg-blue-700 text-sm font-medium"
+                                className="px-3 py-2 btn-secondary text-white rounded disabled:opacity-50 hover:opacity-90 text-sm font-medium"
                             >
                                 Volgende →
                             </button>
@@ -218,14 +256,16 @@
                         <div className="flex items-center gap-2">
                             <button
                                 onClick={() => setZoom(Math.max(50, zoom - 10))}
-                                className="px-2 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 text-sm"
+                                style={{ backgroundColor: '#FFB400', color: '#2F3336' }}
+                                className="px-2 py-1 rounded hover:opacity-90 text-sm font-medium"
                             >
                                 −
                             </button>
                             <span className="text-sm font-medium text-white w-12 text-center">{zoom}%</span>
                             <button
                                 onClick={() => setZoom(Math.min(200, zoom + 10))}
-                                className="px-2 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 text-sm"
+                                style={{ backgroundColor: '#FFB400', color: '#2F3336' }}
+                                className="px-2 py-1 rounded hover:opacity-90 text-sm font-medium"
                             >
                                 +
                             </button>
@@ -234,21 +274,123 @@
                         <a
                             href="syllabus.pdf"
                             download
-                            className="flex items-center gap-1 px-3 py-2 bg-green-600 text-white rounded hover:bg-green-700 text-sm font-medium"
+                            style={{ backgroundColor: '#2EC4B6' }}
+                            className="flex items-center gap-1 px-3 py-2 text-white rounded hover:opacity-90 text-sm font-medium"
                         >
                             <Download size={16} /> Download
                         </a>
 
                         <button
                             onClick={onBack}
-                            className="px-3 py-2 bg-gray-600 text-white rounded hover:bg-gray-700 text-sm font-medium"
+                            className="px-3 py-2 btn-secondary text-white rounded hover:opacity-90 text-sm font-medium"
                         >
                             ← Terug
                         </button>
                     </div>
 
-                    <div className="flex-1 overflow-auto flex justify-center items-start bg-gray-100 p-4">
+                    <div className="flex-1 overflow-auto flex justify-center items-start p-4" style={{ backgroundColor: '#f5f5f5' }}>
                         <canvas ref={canvasRef} className="shadow-lg max-w-full" />
+                    </div>
+                </div>
+            );
+        };
+
+        // Quiz Setup Component
+        const QuizSetup = ({ onStart, onBack }) => {
+            const [selectedTopic, setSelectedTopic] = useState('all');
+            const [selectedLength, setSelectedLength] = useState(10);
+
+            const topics = [
+                { value: 'all', label: 'Alle onderwerpen', icon: '📚', color: '#e2001a' },
+                { value: 'socialeLegislation', label: 'Sociale wetgeving', icon: '⚖️', color: '#495d67' },
+                { value: 'preventiebeleid', label: 'Preventiebeleid', icon: '🛡️', color: '#2EC4B6' },
+                { value: 'arbeidsvoorwaarden', label: 'Arbeidsvoorwaarden', icon: '📋', color: '#FFB400' },
+                { value: 'dimona', label: 'DIMONA', icon: '📝', color: '#222E50' },
+                { value: 'veiligheid', label: 'Veiligheid', icon: '🦺', color: '#e2001a' }
+            ];
+
+            const lengths = [5, 10, 15, 20, 25];
+
+            return (
+                <div className="min-h-screen p-4 md:p-8" style={{ background: 'linear-gradient(to bottom, #f5f5f5, white)' }}>
+                    <div className="max-w-4xl mx-auto">
+                        <button
+                            onClick={onBack}
+                            className="mb-6 px-4 py-2 btn-secondary text-white rounded hover:opacity-90"
+                        >
+                            ← Terug
+                        </button>
+
+                        <div className="bg-white rounded-lg shadow-lg p-8">
+                            <h2 className="text-3xl font-bold text-center mb-8" style={{ color: '#e2001a' }}>
+                                Configureer je quiz
+                            </h2>
+
+                            <div className="mb-8">
+                                <h3 className="text-xl font-semibold mb-4" style={{ color: '#2F3336' }}>
+                                    Kies een onderwerp
+                                </h3>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                    {topics.map(topic => (
+                                        <button
+                                            key={topic.value}
+                                            onClick={() => setSelectedTopic(topic.value)}
+                                            className={`p-4 rounded-lg border-2 transition-all text-left ${
+                                                selectedTopic === topic.value
+                                                    ? 'border-opacity-100 shadow-md'
+                                                    : 'border-gray-300 hover:border-gray-400'
+                                            }`}
+                                            style={{
+                                                borderColor: selectedTopic === topic.value ? topic.color : undefined,
+                                                backgroundColor: selectedTopic === topic.value ? `${topic.color}15` : 'white'
+                                            }}
+                                        >
+                                            <div className="flex items-center gap-3">
+                                                <span className="text-2xl">{topic.icon}</span>
+                                                <span className="font-semibold" style={{ color: '#2F3336' }}>
+                                                    {topic.label}
+                                                </span>
+                                            </div>
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+
+                            <div className="mb-8">
+                                <h3 className="text-xl font-semibold mb-4" style={{ color: '#2F3336' }}>
+                                    Aantal vragen
+                                </h3>
+                                <div className="grid grid-cols-5 gap-3">
+                                    {lengths.map(length => (
+                                        <button
+                                            key={length}
+                                            onClick={() => setSelectedLength(length)}
+                                            className={`p-4 rounded-lg border-2 transition-all font-bold text-lg ${
+                                                selectedLength === length
+                                                    ? 'text-white'
+                                                    : 'border-gray-300 hover:border-gray-400'
+                                            }`}
+                                            style={{
+                                                backgroundColor: selectedLength === length ? '#e2001a' : 'white',
+                                                borderColor: selectedLength === length ? '#e2001a' : undefined,
+                                                color: selectedLength === length ? 'white' : '#2F3336'
+                                            }}
+                                        >
+                                            {length}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+
+                            <div className="text-center">
+                                <button
+                                    onClick={() => onStart(selectedTopic, selectedLength)}
+                                    className="btn-primary px-8 py-4 text-white rounded-lg font-semibold text-lg hover:opacity-90"
+                                >
+                                    Start Quiz 🚀
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             );
@@ -257,17 +399,17 @@
         // Sidebar Study Guide
         const SidebarStudyGuide = ({ isOpen, onClose }) => {
             const topics = [
-                { title: "Arbeidsvoorwaarden", icon: "📋", description: "Regels rond arbeidsovereenkomsten en lonen" },
-                { title: "DIMONA", icon: "📝", description: "Onmiddellijke aangifte van uitzendkrachten" },
-                { title: "Veiligheid", icon: "🛡️", description: "Veiligheid en gezondheid op het werk" },
-                { title: "Gelijke Behandeling", icon: "⚖️", description: "Non-discriminatie en gelijkwaardigheid" }
+                { title: "Arbeidsvoorwaarden", icon: "📋", description: "Regels rond arbeidsovereenkomsten en lonen", color: "#FFB400" },
+                { title: "DIMONA", icon: "📝", description: "Onmiddellijke aangifte van uitzendkrachten", color: "#222E50" },
+                { title: "Veiligheid", icon: "🛡️", description: "Veiligheid en gezondheid op het werk", color: "#2EC4B6" },
+                { title: "Gelijke behandeling", icon: "⚖️", description: "Non-discriminatie en gelijkwaardigheid", color: "#495d67" }
             ];
 
             return (
                 <>
                     {isOpen && <div className="fixed inset-0 bg-black bg-opacity-50 z-30 lg:hidden" onClick={onClose} />}
                     <div className={`fixed left-0 top-0 h-screen w-80 bg-white shadow-lg transform transition-transform duration-300 z-40 overflow-y-auto ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}>
-                        <div className="bg-gradient-to-r from-blue-900 to-blue-700 p-4 flex items-center justify-between">
+                        <div className="bg-gradient-synergie p-4 flex items-center justify-between">
                             <h3 className="text-white font-bold flex items-center gap-2">
                                 <BookOpen size={20} /> Studiegids
                             </h3>
@@ -277,10 +419,17 @@
                         </div>
                         <div className="p-4 space-y-3">
                             {topics.map((topic, idx) => (
-                                <div key={idx} className="p-3 bg-blue-50 rounded-lg border-l-4 border-blue-600">
+                                <div 
+                                    key={idx} 
+                                    className="p-3 rounded-lg border-l-4"
+                                    style={{ 
+                                        backgroundColor: `${topic.color}15`,
+                                        borderLeftColor: topic.color
+                                    }}
+                                >
                                     <div className="text-xl mb-1">{topic.icon}</div>
-                                    <h4 className="font-semibold text-blue-900">{topic.title}</h4>
-                                    <p className="text-xs text-blue-700 mt-1">{topic.description}</p>
+                                    <h4 className="font-semibold" style={{ color: '#2F3336' }}>{topic.title}</h4>
+                                    <p className="text-xs mt-1" style={{ color: '#495d67' }}>{topic.description}</p>
                                 </div>
                             ))}
                         </div>
@@ -295,10 +444,11 @@
             const [currentQuestion, setCurrentQuestion] = useState(0);
             const [selectedAnswer, setSelectedAnswer] = useState(null);
             const [showFeedback, setShowFeedback] = useState(false);
-            const [quizMode, setQuizMode] = useState(null);
+            const [quizTopic, setQuizTopic] = useState('all');
             const [quizLength, setQuizLength] = useState(10);
             const [sidebarOpen, setSidebarOpen] = useState(false);
             const [pdfPage, setPdfPage] = useState(1);
+            const [quizResults, setQuizResults] = useState([]);
             const [performance, setPerformance] = useState({
                 socialeLegislation: { correct: 0, total: 0 },
                 preventiebeleid: { correct: 0, total: 0 },
@@ -331,31 +481,37 @@
                 {id:20,topic:'preventiebeleid',subtopic:'veiligheid',question:'Wat moet er gebeuren bij een bijna-ongeval (near miss)?',options:['Niets, geen schade','Enkel melden bij letsel','Rapporteren om herhaling te voorkomen','Alleen melden bij politie'],correct:2,explanation:'Bijna-ongevallen moeten gerapporteerd worden om herhaling te voorkomen.'},
             ];
 
-            const questions = {
-                socialeLegislation: questionBank.filter(q => q.topic === 'socialeLegislation'),
-                preventiebeleid: questionBank.filter(q => q.topic === 'preventiebeleid')
+            const getFilteredQuestions = (topic) => {
+                if (topic === 'all') return questionBank;
+                
+                // Check if it's a main topic
+                const mainTopicQuestions = questionBank.filter(q => q.topic === topic);
+                if (mainTopicQuestions.length > 0) return mainTopicQuestions;
+                
+                // Otherwise it's a subtopic
+                return questionBank.filter(q => q.subtopic === topic);
             };
 
-            const getAdaptiveQuestions = () => {
-                const weakTopics = Object.entries(performance)
-                    .filter(([_, data]) => data.total > 0 && (data.correct / data.total) < 0.75)
-                    .map(([topic, _]) => topic);
-
-                if (weakTopics.length === 0) return questionBank;
-
-                const adaptiveQuestions = questionBank.filter(q => 
-                    weakTopics.includes(q.subtopic) || Math.random() > 0.5
-                );
-
-                return adaptiveQuestions.length > 0 ? adaptiveQuestions : questionBank;
+            const shuffleArray = (array) => {
+                const newArray = [...array];
+                for (let i = newArray.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+                }
+                return newArray;
             };
 
-            const startQuiz = (mode, length = 10) => {
-                setQuizMode(mode);
+            const startQuiz = (topic, length) => {
+                const filteredQuestions = getFilteredQuestions(topic);
+                const shuffledQuestions = shuffleArray(filteredQuestions);
+                const selectedQuestions = shuffledQuestions.slice(0, Math.min(length, shuffledQuestions.length));
+                
+                setQuizTopic(topic);
                 setQuizLength(length);
                 setCurrentQuestion(0);
                 setSelectedAnswer(null);
                 setShowFeedback(false);
+                setQuizResults(selectedQuestions);
                 setCurrentView('quiz');
                 setSidebarOpen(false);
             };
@@ -365,11 +521,7 @@
             };
 
             const handleSubmitAnswer = () => {
-                const activeQuestions = quizMode === 'adaptive' ? getAdaptiveQuestions() : 
-                                       quizMode === 'sociale' ? questions.socialeLegislation : 
-                                       questions.preventiebeleid;
-                
-                const question = activeQuestions[currentQuestion];
+                const question = quizResults[currentQuestion];
                 const isCorrect = selectedAnswer === question.correct;
                 
                 setPerformance(prev => ({
@@ -388,11 +540,7 @@
             };
 
             const handleNextQuestion = () => {
-                const activeQuestions = quizMode === 'adaptive' ? getAdaptiveQuestions() : 
-                                       quizMode === 'sociale' ? questions.socialeLegislation : 
-                                       questions.preventiebeleid;
-                
-                if (currentQuestion < activeQuestions.length - 1 && currentQuestion < quizLength - 1) {
+                if (currentQuestion < quizResults.length - 1) {
                     setCurrentQuestion(currentQuestion + 1);
                     setSelectedAnswer(null);
                     setShowFeedback(false);
@@ -401,12 +549,15 @@
                 }
             };
 
-            const getPerformanceData = () => {
-                return [
-                    { name: 'Arbeidsvoorwaarden', score: performance.arbeidsvoorwaarden.total > 0 ? Math.round((performance.arbeidsvoorwaarden.correct / performance.arbeidsvoorwaarden.total) * 100) : 0 },
-                    { name: 'DIMONA', score: performance.dimona.total > 0 ? Math.round((performance.dimona.correct / performance.dimona.total) * 100) : 0 },
-                    { name: 'Veiligheid', score: performance.veiligheid.total > 0 ? Math.round((performance.veiligheid.correct / performance.veiligheid.total) * 100) : 0 }
-                ];
+            const getQuizScore = () => {
+                let correct = 0;
+                quizResults.forEach((q, idx) => {
+                    if (idx < currentQuestion || (idx === currentQuestion && showFeedback)) {
+                        const questionPerf = performance[q.subtopic] || performance[q.topic];
+                        if (questionPerf.total > 0) correct++;
+                    }
+                });
+                return { correct, total: showFeedback ? currentQuestion + 1 : currentQuestion };
             };
 
             const getOverallScore = (topic) => {
@@ -414,74 +565,37 @@
                 return Math.round((performance[topic].correct / performance[topic].total) * 100);
             };
 
-            // START PAGE - Mindmap with clickable topics
+            // START PAGE
             const renderStartPage = () => {
                 return (
-                    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
+                    <div className="min-h-screen" style={{ background: 'linear-gradient(to bottom, #f5f5f5, white)' }}>
                         <div className="max-w-7xl mx-auto p-4 md:p-8">
                             <div className="text-center mb-12">
-                                <h1 className="text-5xl font-bold text-blue-900 mb-2">Federgon</h1>
-                                <p className="text-xl text-gray-600">Examen Voorbereiding - Sociale Wetgeving Uitzendarbeid</p>
+                                <h1 className="text-5xl font-bold mb-2" style={{ color: '#e2001a' }}>Federgon</h1>
+                                <p className="text-xl" style={{ color: '#495d67' }}>Examen voorbereiding - Sociale wetgeving uitzendarbeid</p>
                             </div>
 
                             <div className="grid md:grid-cols-2 gap-6 mb-12">
                                 <button
-                                    onClick={() => startQuiz('sociale', 10)}
+                                    onClick={() => setCurrentView('setup')}
                                     className="btn-primary p-8 rounded-lg shadow-lg hover:shadow-xl transition-all transform hover:scale-105 text-white text-center"
                                 >
                                     <div className="text-4xl mb-3">🎯</div>
-                                    <h3 className="text-2xl font-bold mb-2">Begin Oefenen</h3>
-                                    <p className="text-blue-100">Start een quiz met 10 vragen</p>
+                                    <h3 className="text-2xl font-bold mb-2">Begin oefenen</h3>
+                                    <p className="opacity-90">Start een quiz naar keuze</p>
                                 </button>
                                 <button
                                     onClick={() => setCurrentView('pdf')}
-                                    className="bg-green-600 hover:bg-green-700 p-8 rounded-lg shadow-lg hover:shadow-xl transition-all transform hover:scale-105 text-white text-center"
+                                    style={{ backgroundColor: '#2EC4B6' }}
+                                    className="p-8 rounded-lg shadow-lg hover:shadow-xl transition-all transform hover:scale-105 text-white text-center hover:opacity-90"
                                 >
                                     <div className="text-4xl mb-3">📖</div>
-                                    <h3 className="text-2xl font-bold mb-2">Bekijk Syllabus</h3>
-                                    <p className="text-green-100">Volledige studiegids</p>
+                                    <h3 className="text-2xl font-bold mb-2">Bekijk syllabus</h3>
+                                    <p className="opacity-90">Volledige studiegids</p>
                                 </button>
                             </div>
 
-                            <div className="bg-white rounded-lg shadow-lg p-8 mb-12">
-                                <h2 className="text-3xl font-bold text-blue-900 mb-8 text-center">Studieleerpad</h2>
-                                <div className="grid md:grid-cols-2 gap-6">
-                                    <div className="p-6 bg-blue-50 rounded-lg border-l-4 border-blue-600">
-                                        <h3 className="text-xl font-bold text-blue-900 mb-4 flex items-center gap-2">📚 I. Sociale Wetgeving</h3>
-                                        <ul className="space-y-2 text-gray-700">
-                                            <li className="cursor-pointer hover:text-blue-600 font-medium">Arbeidsovereenkomsten</li>
-                                            <li className="cursor-pointer hover:text-blue-600 font-medium">Motieven Uitzendarbeid</li>
-                                            <li className="cursor-pointer hover:text-blue-600 font-medium">Arbeidsrecht</li>
-                                        </ul>
-                                    </div>
-                                    <div className="p-6 bg-green-50 rounded-lg border-l-4 border-green-600">
-                                        <h3 className="text-xl font-bold text-green-900 mb-4 flex items-center gap-2">📋 II. DIMONA & Registratie</h3>
-                                        <ul className="space-y-2 text-gray-700">
-                                            <li className="cursor-pointer hover:text-green-600 font-medium">DIMONA Aangifte</li>
-                                            <li className="cursor-pointer hover:text-green-600 font-medium">Timing & Procedures</li>
-                                            <li className="cursor-pointer hover:text-green-600 font-medium">Administratie</li>
-                                        </ul>
-                                    </div>
-                                    <div className="p-6 bg-red-50 rounded-lg border-l-4 border-red-600">
-                                        <h3 className="text-xl font-bold text-red-900 mb-4 flex items-center gap-2">🛡️ III. Veiligheid & Welzijn</h3>
-                                        <ul className="space-y-2 text-gray-700">
-                                            <li className="cursor-pointer hover:text-red-600 font-medium">Risicoanalyse</li>
-                                            <li className="cursor-pointer hover:text-red-600 font-medium">Arbeidsongevallen</li>
-                                            <li className="cursor-pointer hover:text-red-600 font-medium">Preventie</li>
-                                        </ul>
-                                    </div>
-                                    <div className="p-6 bg-purple-50 rounded-lg border-l-4 border-purple-600">
-                                        <h3 className="text-xl font-bold text-purple-900 mb-4 flex items-center gap-2">⚖️ IV. Gelijke Behandeling</h3>
-                                        <ul className="space-y-2 text-gray-700">
-                                            <li className="cursor-pointer hover:text-purple-600 font-medium">Gelijkheidsprincipe</li>
-                                            <li className="cursor-pointer hover:text-purple-600 font-medium">Loon & Voordelen</li>
-                                            <li className="cursor-pointer hover:text-purple-600 font-medium">Non-Discriminatie</li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="bg-blue-900 text-white rounded-lg p-8 text-center">
+                            <div className="bg-gradient-synergie text-white rounded-lg p-8 text-center">
                                 <h3 className="text-2xl font-bold mb-4">📊 Examenvereisten</h3>
                                 <div className="grid md:grid-cols-4 gap-4">
                                     <div>
@@ -507,17 +621,14 @@
                 );
             };
 
-            // QUIZ PAGE - with sidebar
+            // QUIZ PAGE
             const renderQuiz = () => {
-                const activeQuestions = quizMode === 'adaptive' ? getAdaptiveQuestions() : 
-                                       quizMode === 'sociale' ? questions.socialeLegislation : 
-                                       questions.preventiebeleid;
-                
-                const question = activeQuestions[currentQuestion];
+                const question = quizResults[currentQuestion];
                 const isCorrect = selectedAnswer === question.correct;
+                const score = getQuizScore();
 
                 return (
-                    <div className="min-h-screen bg-gray-50 lg:flex">
+                    <div className="min-h-screen lg:flex" style={{ backgroundColor: '#f5f5f5' }}>
                         <SidebarStudyGuide isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
                         
                         <div className="flex-1 lg:ml-80">
@@ -531,26 +642,35 @@
                                     </button>
                                     <button
                                         onClick={() => setCurrentView('start')}
-                                        className="px-4 py-2 btn-primary text-white rounded hover:opacity-90"
+                                        className="px-4 py-2 btn-secondary text-white rounded hover:opacity-90"
                                     >
                                         ← Terug
                                     </button>
-                                    <div className="text-sm text-gray-600">
-                                        Vraag {currentQuestion + 1} van {Math.min(quizLength, activeQuestions.length)}
+                                    <div className="text-sm font-medium" style={{ color: '#495d67' }}>
+                                        Vraag {currentQuestion + 1} van {quizResults.length} • Score: {score.correct}/{score.total}
                                     </div>
                                 </div>
 
                                 <div className="mb-6">
-                                    <div className="w-full bg-gray-300 rounded-full h-2">
+                                    <div className="w-full rounded-full h-2" style={{ backgroundColor: '#A5A5A5' }}>
                                         <div
-                                            className="bg-gradient-to-r from-blue-600 to-blue-700 h-2 rounded-full transition-all duration-300"
-                                            style={{ width: `${((currentQuestion + 1) / Math.min(quizLength, activeQuestions.length)) * 100}%` }}
+                                            className="h-2 rounded-full transition-all duration-300"
+                                            style={{ 
+                                                width: `${((currentQuestion + 1) / quizResults.length) * 100}%`,
+                                                backgroundColor: '#e2001a'
+                                            }}
                                         />
                                     </div>
                                 </div>
 
                                 <div className="bg-white rounded-lg shadow-lg p-8">
-                                    <h2 className="text-2xl font-bold text-gray-800 mb-6">{question.question}</h2>
+                                    <div className="mb-4">
+                                        <span className="inline-block px-3 py-1 rounded-full text-xs font-semibold" style={{ backgroundColor: '#FFB40025', color: '#2F3336' }}>
+                                            {question.subtopic}
+                                        </span>
+                                    </div>
+                                    
+                                    <h2 className="text-2xl font-bold mb-6" style={{ color: '#2F3336' }}>{question.question}</h2>
 
                                     <div className="space-y-3 mb-6">
                                         {question.options.map((option, index) => (
@@ -559,35 +679,50 @@
                                                 onClick={() => handleAnswerSelect(index)}
                                                 disabled={showFeedback}
                                                 className={`w-full p-4 text-left rounded-lg border-2 transition-all font-medium ${
-                                                    selectedAnswer === index
+                                                    showFeedback ? 'cursor-not-allowed' : 'cursor-pointer'
+                                                }`}
+                                                style={{
+                                                    borderColor: selectedAnswer === index
                                                         ? showFeedback
-                                                            ? index === question.correct
-                                                                ? 'border-green-500 bg-green-50 text-green-900'
-                                                                : 'border-red-500 bg-red-50 text-red-900'
-                                                            : 'border-blue-500 bg-blue-50 text-blue-900'
+                                                            ? index === question.correct ? '#2EC4B6' : '#e2001a'
+                                                            : '#e2001a'
                                                         : showFeedback && index === question.correct
-                                                        ? 'border-green-500 bg-green-50 text-green-900'
-                                                        : 'border-gray-300 hover:border-blue-400 text-gray-700'
-                                                } ${showFeedback ? 'cursor-not-allowed' : 'cursor-pointer'}`}
+                                                        ? '#2EC4B6'
+                                                        : '#A5A5A5',
+                                                    backgroundColor: selectedAnswer === index
+                                                        ? showFeedback
+                                                            ? index === question.correct ? '#2EC4B615' : '#e2001a15'
+                                                            : '#e2001a15'
+                                                        : showFeedback && index === question.correct
+                                                        ? '#2EC4B615'
+                                                        : 'white',
+                                                    color: '#2F3336'
+                                                }}
                                             >
                                                 <div className="flex items-center justify-between">
                                                     <span>{option}</span>
-                                                    {showFeedback && index === question.correct && <CheckCircle size={24} className="text-green-600" />}
-                                                    {showFeedback && selectedAnswer === index && index !== question.correct && <XCircle size={24} className="text-red-600" />}
+                                                    {showFeedback && index === question.correct && <CheckCircle size={24} style={{ color: '#2EC4B6' }} />}
+                                                    {showFeedback && selectedAnswer === index && index !== question.correct && <XCircle size={24} style={{ color: '#e2001a' }} />}
                                                 </div>
                                             </button>
                                         ))}
                                     </div>
 
                                     {showFeedback && (
-                                        <div className={`p-4 rounded-lg mb-6 ${isCorrect ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200'}`}>
+                                        <div className="p-4 rounded-lg mb-6 border-2" style={{ 
+                                            backgroundColor: isCorrect ? '#2EC4B615' : '#e2001a15',
+                                            borderColor: isCorrect ? '#2EC4B6' : '#e2001a'
+                                        }}>
                                             <div className="flex items-start">
-                                                {isCorrect ? <CheckCircle size={20} className="text-green-600 mr-2 mt-1" /> : <XCircle size={20} className="text-red-600 mr-2 mt-1" />}
+                                                {isCorrect ? 
+                                                    <CheckCircle size={20} style={{ color: '#2EC4B6' }} className="mr-2 mt-1" /> : 
+                                                    <XCircle size={20} style={{ color: '#e2001a' }} className="mr-2 mt-1" />
+                                                }
                                                 <div>
-                                                    <div className={`font-semibold ${isCorrect ? 'text-green-800' : 'text-red-800'}`}>
+                                                    <div className="font-semibold" style={{ color: '#2F3336' }}>
                                                         {isCorrect ? 'Correct!' : 'Niet correct'}
                                                     </div>
-                                                    <p className={`text-sm mt-2 ${isCorrect ? 'text-green-700' : 'text-red-700'}`}>{question.explanation}</p>
+                                                    <p className="text-sm mt-2" style={{ color: '#495d67' }}>{question.explanation}</p>
                                                 </div>
                                             </div>
                                         </div>
@@ -598,16 +733,17 @@
                                             <button
                                                 onClick={handleSubmitAnswer}
                                                 disabled={selectedAnswer === null}
-                                                className={`px-6 py-3 rounded-lg font-medium ${selectedAnswer !== null ? 'btn-primary text-white hover:opacity-90' : 'bg-gray-300 text-gray-500 cursor-not-allowed'}`}
+                                                className={`px-6 py-3 rounded-lg font-medium ${selectedAnswer !== null ? 'btn-primary text-white hover:opacity-90' : 'opacity-50 cursor-not-allowed'}`}
+                                                style={{ backgroundColor: selectedAnswer !== null ? '#e2001a' : '#A5A5A5' }}
                                             >
-                                                Controleer Antwoord
+                                                Controleer antwoord
                                             </button>
                                         ) : (
                                             <button
                                                 onClick={handleNextQuestion}
                                                 className="px-6 py-3 btn-primary text-white rounded-lg font-medium hover:opacity-90"
                                             >
-                                                {currentQuestion < Math.min(quizLength, activeQuestions.length) - 1 ? 'Volgende Vraag →' : 'Bekijk Resultaten'}
+                                                {currentQuestion < quizResults.length - 1 ? 'Volgende vraag →' : 'Bekijk resultaten'}
                                             </button>
                                         )}
                                     </div>
@@ -620,39 +756,38 @@
 
             // RESULTS PAGE
             const renderResults = () => {
-                const socialeScore = getOverallScore('socialeLegislation');
-                const preventieScore = getOverallScore('preventiebeleid');
+                const totalCorrect = quizResults.filter((q, idx) => {
+                    const perf = performance[q.subtopic] || performance[q.topic];
+                    return perf && perf.correct > 0;
+                }).length;
+                
+                const percentage = Math.round((totalCorrect / quizResults.length) * 100);
+                const passed = percentage >= 75;
                 
                 return (
-                    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white p-4 md:p-8">
+                    <div className="min-h-screen p-4 md:p-8" style={{ background: 'linear-gradient(to bottom, #f5f5f5, white)' }}>
                         <div className="max-w-4xl mx-auto">
                             <div className="bg-white rounded-lg shadow-lg p-8">
-                                <h2 className="text-4xl font-bold text-center text-blue-900 mb-8">Quiz Voltooid! 🎉</h2>
+                                <h2 className="text-4xl font-bold text-center mb-8" style={{ color: '#e2001a' }}>Quiz voltooid! 🎉</h2>
                                 
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                                    <div className="text-center p-8 bg-blue-50 rounded-lg border-2 border-blue-200">
-                                        <div className="text-5xl font-bold text-blue-600 mb-2">{socialeScore}%</div>
-                                        <div className="text-gray-700 font-semibold mb-3">Sociale Wetgeving</div>
-                                        {socialeScore >= 75 ? (
-                                            <div className="text-green-600 font-bold flex items-center justify-center gap-2">
-                                                <CheckCircle size={20} /> Geslaagd!
-                                            </div>
-                                        ) : (
-                                            <div className="text-orange-600 font-semibold">75% vereist</div>
-                                        )}
+                                <div className="text-center mb-8">
+                                    <div className="inline-block p-12 rounded-full mb-6" style={{ backgroundColor: passed ? '#2EC4B615' : '#e2001a15' }}>
+                                        <div className="text-6xl font-bold" style={{ color: passed ? '#2EC4B6' : '#e2001a' }}>
+                                            {percentage}%
+                                        </div>
                                     </div>
-                                    
-                                    <div className="text-center p-8 bg-green-50 rounded-lg border-2 border-green-200">
-                                        <div className="text-5xl font-bold text-green-600 mb-2">{preventieScore}%</div>
-                                        <div className="text-gray-700 font-semibold mb-3">Preventiebeleid</div>
-                                        {preventieScore >= 75 ? (
-                                            <div className="text-green-600 font-bold flex items-center justify-center gap-2">
-                                                <CheckCircle size={20} /> Geslaagd!
-                                            </div>
-                                        ) : (
-                                            <div className="text-orange-600 font-semibold">75% vereist</div>
-                                        )}
+                                    <div className="text-2xl font-semibold mb-2" style={{ color: '#2F3336' }}>
+                                        {totalCorrect} van de {quizResults.length} correct
                                     </div>
+                                    {passed ? (
+                                        <div className="text-xl font-bold flex items-center justify-center gap-2" style={{ color: '#2EC4B6' }}>
+                                            <CheckCircle size={24} /> Geslaagd!
+                                        </div>
+                                    ) : (
+                                        <div className="text-xl font-semibold" style={{ color: '#e2001a' }}>
+                                            75% vereist om te slagen
+                                        </div>
+                                    )}
                                 </div>
 
                                 <div className="space-y-4 text-center">
@@ -660,13 +795,13 @@
                                         onClick={() => setCurrentView('start')}
                                         className="px-8 py-3 btn-primary text-white rounded-lg font-semibold hover:opacity-90 mr-3"
                                     >
-                                        Terug naar Home
+                                        Terug naar home
                                     </button>
                                     <button
-                                        onClick={() => startQuiz(quizMode, quizLength)}
-                                        className="px-8 py-3 bg-gray-600 hover:bg-gray-700 text-white rounded-lg font-semibold"
+                                        onClick={() => setCurrentView('setup')}
+                                        className="px-8 py-3 btn-secondary text-white rounded-lg font-semibold hover:opacity-90"
                                     >
-                                        Opnieuw Oefenen
+                                        Nieuwe quiz
                                     </button>
                                 </div>
                             </div>
@@ -678,7 +813,7 @@
             // PDF PAGE
             const renderPDF = () => {
                 return (
-                    <div className="min-h-screen bg-gray-50 p-4">
+                    <div className="min-h-screen p-4" style={{ backgroundColor: '#f5f5f5' }}>
                         <div className="max-w-7xl mx-auto">
                             <div style={{ height: '900px' }}>
                                 <PDFViewer pdfPath="syllabus.pdf" initialPage={pdfPage} onBack={() => setCurrentView('start')} />
@@ -691,6 +826,7 @@
             return (
                 <div>
                     {currentView === 'start' && renderStartPage()}
+                    {currentView === 'setup' && <QuizSetup onStart={startQuiz} onBack={() => setCurrentView('start')} />}
                     {currentView === 'quiz' && renderQuiz()}
                     {currentView === 'results' && renderResults()}
                     {currentView === 'pdf' && renderPDF()}
