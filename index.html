@@ -49,38 +49,12 @@
             background-color: var(--synergie-dark-grey);
         }
         
-        .btn-accent {
-            background-color: var(--synergie-yellow);
-            color: var(--synergie-dark-grey);
-            font-weight: 600;
-        }
-        
-        .btn-accent:hover {
-            background-color: #e6a300;
-        }
-        
-        .text-primary {
-            color: var(--synergie-red);
-        }
-        
-        .text-secondary {
-            color: var(--synergie-blue-grey);
-        }
-        
-        .bg-primary {
-            background-color: var(--synergie-red);
-        }
-        
-        .bg-secondary {
-            background-color: var(--synergie-blue-grey);
-        }
-        
-        .border-primary {
-            border-color: var(--synergie-red);
-        }
-        
         .bg-gradient-synergie {
             background: linear-gradient(135deg, var(--synergie-red) 0%, var(--synergie-blue-grey) 100%);
+        }
+
+        .progress-bar {
+            transition: width 0.3s ease;
         }
     </style>
 </head>
@@ -90,73 +64,301 @@
     <script type="text/babel">
         const { useState, useEffect, useRef } = React;
 
-        // Set PDF worker
         if (typeof pdfjsLib !== 'undefined') {
             pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
         }
 
         // Icons
-        const CheckCircle = ({ size = 24, className = "" }) => (
-            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={className}>
+        const CheckCircle = ({ size = 24 }) => (
+            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
                 <polyline points="22 4 12 14.01 9 11.01"></polyline>
             </svg>
         );
 
-        const XCircle = ({ size = 24, className = "" }) => (
-            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={className}>
+        const XCircle = ({ size = 24 }) => (
+            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <circle cx="12" cy="12" r="10"></circle>
                 <line x1="15" y1="9" x2="9" y2="15"></line>
                 <line x1="9" y1="9" x2="15" y2="15"></line>
             </svg>
         );
 
-        const BookOpen = ({ size = 24, className = "" }) => (
-            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={className}>
+        const BookOpen = ({ size = 24 }) => (
+            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
                 <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
             </svg>
         );
 
-        const Target = ({ size = 24, className = "" }) => (
-            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={className}>
-                <circle cx="12" cy="12" r="10"></circle>
-                <circle cx="12" cy="12" r="6"></circle>
-                <circle cx="12" cy="12" r="2"></circle>
+        const BarChart = ({ size = 24 }) => (
+            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <line x1="12" y1="20" x2="12" y2="10"></line>
+                <line x1="18" y1="20" x2="18" y2="4"></line>
+                <line x1="6" y1="20" x2="6" y2="16"></line>
             </svg>
         );
 
-        const TrendingUp = ({ size = 24, className = "" }) => (
-            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={className}>
+        const TrendingUp = ({ size = 24 }) => (
+            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
                 <polyline points="17 6 23 6 23 12"></polyline>
             </svg>
         );
 
-        const Menu = ({ size = 24, className = "" }) => (
-            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={className}>
+        const Award = ({ size = 24 }) => (
+            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <circle cx="12" cy="8" r="7"></circle>
+                <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline>
+            </svg>
+        );
+
+        const Menu = ({ size = 24 }) => (
+            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <line x1="3" y1="6" x2="21" y2="6"></line>
                 <line x1="3" y1="12" x2="21" y2="12"></line>
                 <line x1="3" y1="18" x2="21" y2="18"></line>
             </svg>
         );
 
-        const X = ({ size = 24, className = "" }) => (
-            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={className}>
+        const X = ({ size = 24 }) => (
+            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <line x1="18" y1="6" x2="6" y2="18"></line>
                 <line x1="6" y1="6" x2="18" y2="18"></line>
             </svg>
         );
 
-        const Download = ({ size = 24, className = "" }) => (
-            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={className}>
+        const Download = ({ size = 24 }) => (
+            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
                 <polyline points="7 10 12 15 17 10"></polyline>
                 <line x1="12" y1="15" x2="12" y2="3"></line>
             </svg>
         );
 
-        // PDF Viewer Component
+        const Trash = ({ size = 24 }) => (
+            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <polyline points="3 6 5 6 21 6"></polyline>
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+            </svg>
+        );
+
+        // Storage Functions
+        const saveQuizResult = (result) => {
+            const history = JSON.parse(localStorage.getItem('federgon_quiz_history') || '[]');
+            history.push({ ...result, timestamp: new Date().toISOString() });
+            localStorage.setItem('federgon_quiz_history', JSON.stringify(history));
+        };
+
+        const getQuizHistory = () => JSON.parse(localStorage.getItem('federgon_quiz_history') || '[]');
+        const clearQuizHistory = () => localStorage.removeItem('federgon_quiz_history');
+
+        const calculateStats = (history) => {
+            if (!history.length) return { totalQuizzes: 0, totalQuestions: 0, totalCorrect: 0, overallPercentage: 0, topicStats: {}, recentQuizzes: [], readyForExam: false };
+            
+            const topicStats = {};
+            let totalQuestions = 0, totalCorrect = 0;
+
+            history.forEach(quiz => {
+                totalQuestions += quiz.total;
+                totalCorrect += quiz.correct;
+                
+                quiz.answers.forEach(answer => {
+                    const topic = answer.topic || 'unknown';
+                    if (!topicStats[topic]) topicStats[topic] = { correct: 0, total: 0 };
+                    topicStats[topic].total++;
+                    if (answer.correct) topicStats[topic].correct++;
+                });
+            });
+
+            const overallPercentage = Math.round((totalCorrect / totalQuestions) * 100);
+            const recentQuizzes = history.slice(-5).reverse();
+            const recentPasses = recentQuizzes.filter(q => (q.correct / q.total) >= 0.75).length;
+            const readyForExam = overallPercentage >= 75 && recentPasses >= 3;
+
+            return { totalQuizzes: history.length, totalQuestions, totalCorrect, overallPercentage, topicStats, recentQuizzes, readyForExam };
+        };
+
+        // Performance Dashboard Component
+        const PerformanceDashboard = ({ onBack }) => {
+            const [history, setHistory] = useState(getQuizHistory());
+            const [showConfirm, setShowConfirm] = useState(false);
+            const stats = calculateStats(history);
+
+            const handleClearHistory = () => {
+                clearQuizHistory();
+                setHistory([]);
+                setShowConfirm(false);
+            };
+
+            const topicColors = {
+                socialeLegislation: '#495d67',
+                preventiebeleid: '#2EC4B6',
+                arbeidsvoorwaarden: '#FFB400',
+                dimona: '#222E50',
+                veiligheid: '#e2001a'
+            };
+
+            const topicNames = {
+                socialeLegislation: 'Sociale wetgeving',
+                preventiebeleid: 'Preventiebeleid',
+                arbeidsvoorwaarden: 'Arbeidsvoorwaarden',
+                dimona: 'DIMONA',
+                veiligheid: 'Veiligheid'
+            };
+
+            return (
+                <div className="min-h-screen p-4 md:p-8" style={{ background: 'linear-gradient(to bottom, #f5f5f5, white)' }}>
+                    <div className="max-w-6xl mx-auto">
+                        <div className="flex justify-between items-center mb-8">
+                            <button onClick={onBack} className="px-4 py-2 btn-secondary text-white rounded hover:opacity-90">
+                                ← Terug
+                            </button>
+                            {stats.totalQuizzes > 0 && (
+                                <button onClick={() => setShowConfirm(true)} className="px-4 py-2 rounded hover:opacity-90 flex items-center gap-2" style={{ backgroundColor: '#e2001a', color: 'white' }}>
+                                    <Trash size={16} /> Wis geschiedenis
+                                </button>
+                            )}
+                        </div>
+
+                        {showConfirm && (
+                            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                                <div className="bg-white rounded-lg p-6 max-w-md mx-4">
+                                    <h3 className="text-xl font-bold mb-4" style={{ color: '#2F3336' }}>Geschiedenis wissen?</h3>
+                                    <p className="mb-6" style={{ color: '#495d67' }}>Dit verwijdert alle opgeslagen quizresultaten. Deze actie kan niet ongedaan worden gemaakt.</p>
+                                    <div className="flex gap-3 justify-end">
+                                        <button onClick={() => setShowConfirm(false)} className="px-4 py-2 rounded" style={{ backgroundColor: '#A5A5A5', color: 'white' }}>
+                                            Annuleren
+                                        </button>
+                                        <button onClick={handleClearHistory} className="px-4 py-2 rounded" style={{ backgroundColor: '#e2001a', color: 'white' }}>
+                                            Wissen
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        <div className="text-center mb-12">
+                            <h1 className="text-4xl font-bold mb-2" style={{ color: '#e2001a' }}>
+                                <BarChart size={40} className="inline mr-2" /> Mijn Voortgang
+                            </h1>
+                            <p className="text-lg" style={{ color: '#495d67' }}>Track je prestaties en bereikingsgraad</p>
+                        </div>
+
+                        {stats.totalQuizzes === 0 ? (
+                            <div className="bg-white rounded-lg shadow-lg p-12 text-center">
+                                <div className="text-6xl mb-4">📊</div>
+                                <h2 className="text-2xl font-bold mb-4" style={{ color: '#2F3336' }}>Nog geen quizzen gemaakt</h2>
+                                <p className="mb-6" style={{ color: '#495d67' }}>Start je eerste quiz om je voortgang te beginnen volgen!</p>
+                                <button onClick={onBack} className="px-8 py-3 btn-primary text-white rounded-lg font-semibold hover:opacity-90">
+                                    Start een quiz
+                                </button>
+                            </div>
+                        ) : (
+                            <>
+                                {/* Overall Stats Card */}
+                                <div className="bg-white rounded-lg shadow-lg p-8 mb-6">
+                                    <div className="flex items-center justify-between mb-6">
+                                        <h2 className="text-2xl font-bold" style={{ color: '#2F3336' }}>Overall prestaties</h2>
+                                        {stats.readyForExam && (
+                                            <div className="flex items-center gap-2 px-4 py-2 rounded-lg" style={{ backgroundColor: '#2EC4B615', color: '#2EC4B6' }}>
+                                                <Award size={20} /> Klaar voor examen!
+                                            </div>
+                                        )}
+                                    </div>
+                                    <div className="grid md:grid-cols-4 gap-6">
+                                        <div className="text-center p-4 rounded-lg" style={{ backgroundColor: '#f5f5f5' }}>
+                                            <div className="text-3xl font-bold mb-2" style={{ color: '#e2001a' }}>{stats.totalQuizzes}</div>
+                                            <div className="text-sm" style={{ color: '#495d67' }}>Quizzen voltooid</div>
+                                        </div>
+                                        <div className="text-center p-4 rounded-lg" style={{ backgroundColor: '#f5f5f5' }}>
+                                            <div className="text-3xl font-bold mb-2" style={{ color: '#e2001a' }}>{stats.totalQuestions}</div>
+                                            <div className="text-sm" style={{ color: '#495d67' }}>Vragen beantwoord</div>
+                                        </div>
+                                        <div className="text-center p-4 rounded-lg" style={{ backgroundColor: '#f5f5f5' }}>
+                                            <div className="text-3xl font-bold mb-2" style={{ color: stats.overallPercentage >= 75 ? '#2EC4B6' : '#e2001a' }}>{stats.overallPercentage}%</div>
+                                            <div className="text-sm" style={{ color: '#495d67' }}>Gemiddelde score</div>
+                                        </div>
+                                        <div className="text-center p-4 rounded-lg" style={{ backgroundColor: '#f5f5f5' }}>
+                                            <div className="text-3xl font-bold mb-2" style={{ color: '#e2001a' }}>{stats.totalCorrect}</div>
+                                            <div className="text-sm" style={{ color: '#495d67' }}>Correct beantwoord</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Topic Breakdown */}
+                                <div className="bg-white rounded-lg shadow-lg p-8 mb-6">
+                                    <h2 className="text-2xl font-bold mb-6" style={{ color: '#2F3336' }}>Prestaties per onderwerp</h2>
+                                    <div className="space-y-4">
+                                        {Object.entries(stats.topicStats).map(([topic, data]) => {
+                                            const percentage = data.total > 0 ? Math.round((data.correct / data.total) * 100) : 0;
+                                            const color = topicColors[topic] || '#495d67';
+                                            return (
+                                                <div key={topic}>
+                                                    <div className="flex justify-between mb-2">
+                                                        <span className="font-semibold" style={{ color: '#2F3336' }}>{topicNames[topic] || topic}</span>
+                                                        <span style={{ color: percentage >= 75 ? '#2EC4B6' : '#e2001a' }} className="font-bold">
+                                                            {percentage}% ({data.correct}/{data.total})
+                                                        </span>
+                                                    </div>
+                                                    <div className="w-full rounded-full h-3" style={{ backgroundColor: '#f5f5f5' }}>
+                                                        <div className="h-3 rounded-full progress-bar" style={{ width: `${percentage}%`, backgroundColor: color }}></div>
+                                                    </div>
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                </div>
+
+                                {/* Recent Quizzes */}
+                                <div className="bg-white rounded-lg shadow-lg p-8">
+                                    <h2 className="text-2xl font-bold mb-6" style={{ color: '#2F3336' }}>Recente quizzen</h2>
+                                    <div className="space-y-3">
+                                        {stats.recentQuizzes.map((quiz, idx) => {
+                                            const percentage = Math.round((quiz.correct / quiz.total) * 100);
+                                            const passed = percentage >= 75;
+                                            const date = new Date(quiz.timestamp).toLocaleDateString('nl-BE', { day: 'numeric', month: 'short', year: 'numeric' });
+                                            return (
+                                                <div key={idx} className="flex items-center justify-between p-4 rounded-lg" style={{ backgroundColor: '#f5f5f5' }}>
+                                                    <div className="flex items-center gap-3">
+                                                        <div className="text-2xl">{passed ? '✅' : '❌'}</div>
+                                                        <div>
+                                                            <div className="font-semibold" style={{ color: '#2F3336' }}>
+                                                                {quiz.topic === 'all' ? 'Alle onderwerpen' : topicNames[quiz.topic] || quiz.topic}
+                                                            </div>
+                                                            <div className="text-sm" style={{ color: '#495d67' }}>{date}</div>
+                                                        </div>
+                                                    </div>
+                                                    <div className="text-right">
+                                                        <div className="font-bold text-lg" style={{ color: passed ? '#2EC4B6' : '#e2001a' }}>{percentage}%</div>
+                                                        <div className="text-sm" style={{ color: '#495d67' }}>{quiz.correct}/{quiz.total}</div>
+                                                    </div>
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                </div>
+
+                                {/* Recommendations */}
+                                <div className="mt-6 p-6 rounded-lg" style={{ backgroundColor: stats.readyForExam ? '#2EC4B615' : '#FFB40015', border: `2px solid ${stats.readyForExam ? '#2EC4B6' : '#FFB400'}` }}>
+                                    <h3 className="font-bold text-lg mb-2" style={{ color: '#2F3336' }}>
+                                        {stats.readyForExam ? '🎉 Je bent klaar voor het examen!' : '💪 Blijf oefenen!'}
+                                    </h3>
+                                    <p style={{ color: '#495d67' }}>
+                                        {stats.readyForExam 
+                                            ? 'Je hebt een consistente score van 75% of hoger. Je kan met vertrouwen naar het examen!'
+                                            : `Je hebt nog wat oefening nodig. Probeer een score van 75% te behalen in meerdere quizzen. Focus vooral op: ${Object.entries(stats.topicStats).filter(([_, data]) => (data.correct / data.total) < 0.75).map(([topic]) => topicNames[topic]).join(', ')}.`
+                                        }
+                                    </p>
+                                </div>
+                            </>
+                        )}
+                    </div>
+                </div>
+            );
+        };
+
+        // PDF Viewer Component (simplified for space)
         const PDFViewer = ({ pdfPath, initialPage = 1, onBack }) => {
             const [pdf, setPdf] = useState(null);
             const [currentPage, setCurrentPage] = useState(initialPage);
@@ -185,39 +387,23 @@
 
             useEffect(() => {
                 if (!pdf) return;
-
                 const renderPage = async () => {
                     try {
                         const page = await pdf.getPage(currentPage);
                         const scale = zoom / 100;
                         const viewport = page.getViewport({ scale });
                         const canvas = canvasRef.current;
-                        
                         if (!canvas) return;
-                        
                         const context = canvas.getContext('2d');
                         canvas.width = viewport.width;
                         canvas.height = viewport.height;
-
-                        await page.render({
-                            canvasContext: context,
-                            viewport: viewport
-                        }).promise;
+                        await page.render({ canvasContext: context, viewport: viewport }).promise;
                     } catch (error) {
                         console.error('Error rendering PDF page:', error);
                     }
                 };
-
                 renderPage();
             }, [pdf, currentPage, zoom]);
-
-            const goToNextPage = () => {
-                if (currentPage < totalPages) setCurrentPage(currentPage + 1);
-            };
-
-            const goToPrevPage = () => {
-                if (currentPage > 1) setCurrentPage(currentPage - 1);
-            };
 
             if (loading) {
                 return (
@@ -234,60 +420,24 @@
                 <div className="bg-white rounded-lg shadow-lg overflow-hidden flex flex-col h-full">
                     <div className="bg-gradient-synergie p-4 flex items-center justify-between flex-wrap gap-2">
                         <div className="flex items-center gap-2">
-                            <button
-                                onClick={goToPrevPage}
-                                disabled={currentPage === 1}
-                                className="px-3 py-2 btn-secondary text-white rounded disabled:opacity-50 hover:opacity-90 text-sm font-medium"
-                            >
+                            <button onClick={() => currentPage > 1 && setCurrentPage(currentPage - 1)} disabled={currentPage === 1} className="px-3 py-2 btn-secondary text-white rounded disabled:opacity-50 hover:opacity-90 text-sm font-medium">
                                 ← Vorige
                             </button>
-                            <span className="text-sm font-medium text-white whitespace-nowrap">
-                                Pagina {currentPage} van {totalPages}
-                            </span>
-                            <button
-                                onClick={goToNextPage}
-                                disabled={currentPage === totalPages}
-                                className="px-3 py-2 btn-secondary text-white rounded disabled:opacity-50 hover:opacity-90 text-sm font-medium"
-                            >
+                            <span className="text-sm font-medium text-white whitespace-nowrap">Pagina {currentPage} van {totalPages}</span>
+                            <button onClick={() => currentPage < totalPages && setCurrentPage(currentPage + 1)} disabled={currentPage === totalPages} className="px-3 py-2 btn-secondary text-white rounded disabled:opacity-50 hover:opacity-90 text-sm font-medium">
                                 Volgende →
                             </button>
                         </div>
-
                         <div className="flex items-center gap-2">
-                            <button
-                                onClick={() => setZoom(Math.max(50, zoom - 10))}
-                                style={{ backgroundColor: '#FFB400', color: '#2F3336' }}
-                                className="px-2 py-1 rounded hover:opacity-90 text-sm font-medium"
-                            >
-                                −
-                            </button>
+                            <button onClick={() => setZoom(Math.max(50, zoom - 10))} style={{ backgroundColor: '#FFB400', color: '#2F3336' }} className="px-2 py-1 rounded hover:opacity-90 text-sm font-medium">−</button>
                             <span className="text-sm font-medium text-white w-12 text-center">{zoom}%</span>
-                            <button
-                                onClick={() => setZoom(Math.min(200, zoom + 10))}
-                                style={{ backgroundColor: '#FFB400', color: '#2F3336' }}
-                                className="px-2 py-1 rounded hover:opacity-90 text-sm font-medium"
-                            >
-                                +
-                            </button>
+                            <button onClick={() => setZoom(Math.min(200, zoom + 10))} style={{ backgroundColor: '#FFB400', color: '#2F3336' }} className="px-2 py-1 rounded hover:opacity-90 text-sm font-medium">+</button>
                         </div>
-
-                        <a
-                            href="syllabus.pdf"
-                            download
-                            style={{ backgroundColor: '#2EC4B6' }}
-                            className="flex items-center gap-1 px-3 py-2 text-white rounded hover:opacity-90 text-sm font-medium"
-                        >
+                        <a href="syllabus.pdf" download style={{ backgroundColor: '#2EC4B6' }} className="flex items-center gap-1 px-3 py-2 text-white rounded hover:opacity-90 text-sm font-medium">
                             <Download size={16} /> Download
                         </a>
-
-                        <button
-                            onClick={onBack}
-                            className="px-3 py-2 btn-secondary text-white rounded hover:opacity-90 text-sm font-medium"
-                        >
-                            ← Terug
-                        </button>
+                        <button onClick={onBack} className="px-3 py-2 btn-secondary text-white rounded hover:opacity-90 text-sm font-medium">← Terug</button>
                     </div>
-
                     <div className="flex-1 overflow-auto flex justify-center items-start p-4" style={{ backgroundColor: '#f5f5f5' }}>
                         <canvas ref={canvasRef} className="shadow-lg max-w-full" />
                     </div>
@@ -309,84 +459,39 @@
                 { value: 'veiligheid', label: 'Veiligheid', icon: '🦺', color: '#e2001a' }
             ];
 
-            const lengths = [5, 10, 15, 20, 25];
+            const lengths = [5, 10, 15, 20, 25, 30];
 
             return (
                 <div className="min-h-screen p-4 md:p-8" style={{ background: 'linear-gradient(to bottom, #f5f5f5, white)' }}>
                     <div className="max-w-4xl mx-auto">
-                        <button
-                            onClick={onBack}
-                            className="mb-6 px-4 py-2 btn-secondary text-white rounded hover:opacity-90"
-                        >
-                            ← Terug
-                        </button>
-
+                        <button onClick={onBack} className="mb-6 px-4 py-2 btn-secondary text-white rounded hover:opacity-90">← Terug</button>
                         <div className="bg-white rounded-lg shadow-lg p-8">
-                            <h2 className="text-3xl font-bold text-center mb-8" style={{ color: '#e2001a' }}>
-                                Configureer je quiz
-                            </h2>
-
+                            <h2 className="text-3xl font-bold text-center mb-8" style={{ color: '#e2001a' }}>Configureer je quiz</h2>
                             <div className="mb-8">
-                                <h3 className="text-xl font-semibold mb-4" style={{ color: '#2F3336' }}>
-                                    Kies een onderwerp
-                                </h3>
+                                <h3 className="text-xl font-semibold mb-4" style={{ color: '#2F3336' }}>Kies een onderwerp</h3>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                                     {topics.map(topic => (
-                                        <button
-                                            key={topic.value}
-                                            onClick={() => setSelectedTopic(topic.value)}
-                                            className={`p-4 rounded-lg border-2 transition-all text-left ${
-                                                selectedTopic === topic.value
-                                                    ? 'border-opacity-100 shadow-md'
-                                                    : 'border-gray-300 hover:border-gray-400'
-                                            }`}
-                                            style={{
-                                                borderColor: selectedTopic === topic.value ? topic.color : undefined,
-                                                backgroundColor: selectedTopic === topic.value ? `${topic.color}15` : 'white'
-                                            }}
-                                        >
+                                        <button key={topic.value} onClick={() => setSelectedTopic(topic.value)} className={`p-4 rounded-lg border-2 transition-all text-left ${selectedTopic === topic.value ? 'border-opacity-100 shadow-md' : 'border-gray-300 hover:border-gray-400'}`} style={{ borderColor: selectedTopic === topic.value ? topic.color : undefined, backgroundColor: selectedTopic === topic.value ? `${topic.color}15` : 'white' }}>
                                             <div className="flex items-center gap-3">
                                                 <span className="text-2xl">{topic.icon}</span>
-                                                <span className="font-semibold" style={{ color: '#2F3336' }}>
-                                                    {topic.label}
-                                                </span>
+                                                <span className="font-semibold" style={{ color: '#2F3336' }}>{topic.label}</span>
                                             </div>
                                         </button>
                                     ))}
                                 </div>
                             </div>
-
                             <div className="mb-8">
-                                <h3 className="text-xl font-semibold mb-4" style={{ color: '#2F3336' }}>
-                                    Aantal vragen
-                                </h3>
-                                <div className="grid grid-cols-5 gap-3">
+                                <h3 className="text-xl font-semibold mb-4" style={{ color: '#2F3336' }}>Aantal vragen</h3>
+                                <div className="grid grid-cols-6 gap-3">
                                     {lengths.map(length => (
-                                        <button
-                                            key={length}
-                                            onClick={() => setSelectedLength(length)}
-                                            className={`p-4 rounded-lg border-2 transition-all font-bold text-lg ${
-                                                selectedLength === length
-                                                    ? 'text-white'
-                                                    : 'border-gray-300 hover:border-gray-400'
-                                            }`}
-                                            style={{
-                                                backgroundColor: selectedLength === length ? '#e2001a' : 'white',
-                                                borderColor: selectedLength === length ? '#e2001a' : undefined,
-                                                color: selectedLength === length ? 'white' : '#2F3336'
-                                            }}
-                                        >
+                                        <button key={length} onClick={() => setSelectedLength(length)} className={`p-4 rounded-lg border-2 transition-all font-bold text-lg ${selectedLength === length ? 'text-white' : 'border-gray-300 hover:border-gray-400'}`} style={{ backgroundColor: selectedLength === length ? '#e2001a' : 'white', borderColor: selectedLength === length ? '#e2001a' : undefined, color: selectedLength === length ? 'white' : '#2F3336' }}>
                                             {length}
                                         </button>
                                     ))}
                                 </div>
                             </div>
-
                             <div className="text-center">
-                                <button
-                                    onClick={() => onStart(selectedTopic, selectedLength)}
-                                    className="btn-primary px-8 py-4 text-white rounded-lg font-semibold text-lg hover:opacity-90"
-                                >
+                                <button onClick={() => onStart(selectedTopic, selectedLength)} className="btn-primary px-8 py-4 text-white rounded-lg font-semibold text-lg hover:opacity-90">
                                     Start Quiz 🚀
                                 </button>
                             </div>
@@ -410,23 +515,12 @@
                     {isOpen && <div className="fixed inset-0 bg-black bg-opacity-50 z-30 lg:hidden" onClick={onClose} />}
                     <div className={`fixed left-0 top-0 h-screen w-80 bg-white shadow-lg transform transition-transform duration-300 z-40 overflow-y-auto ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}>
                         <div className="bg-gradient-synergie p-4 flex items-center justify-between">
-                            <h3 className="text-white font-bold flex items-center gap-2">
-                                <BookOpen size={20} /> Studiegids
-                            </h3>
-                            <button onClick={onClose} className="lg:hidden text-white">
-                                <X size={24} />
-                            </button>
+                            <h3 className="text-white font-bold flex items-center gap-2"><BookOpen size={20} /> Studiegids</h3>
+                            <button onClick={onClose} className="lg:hidden text-white"><X size={24} /></button>
                         </div>
                         <div className="p-4 space-y-3">
                             {topics.map((topic, idx) => (
-                                <div 
-                                    key={idx} 
-                                    className="p-3 rounded-lg border-l-4"
-                                    style={{ 
-                                        backgroundColor: `${topic.color}15`,
-                                        borderLeftColor: topic.color
-                                    }}
-                                >
+                                <div key={idx} className="p-3 rounded-lg border-l-4" style={{ backgroundColor: `${topic.color}15`, borderLeftColor: topic.color }}>
                                     <div className="text-xl mb-1">{topic.icon}</div>
                                     <h4 className="font-semibold" style={{ color: '#2F3336' }}>{topic.title}</h4>
                                     <p className="text-xs mt-1" style={{ color: '#495d67' }}>{topic.description}</p>
@@ -449,15 +543,9 @@
             const [sidebarOpen, setSidebarOpen] = useState(false);
             const [pdfPage, setPdfPage] = useState(1);
             const [quizResults, setQuizResults] = useState([]);
-            const [performance, setPerformance] = useState({
-                socialeLegislation: { correct: 0, total: 0 },
-                preventiebeleid: { correct: 0, total: 0 },
-                arbeidsvoorwaarden: { correct: 0, total: 0 },
-                dimona: { correct: 0, total: 0 },
-                veiligheid: { correct: 0, total: 0 }
-            });
+            const [answers, setAnswers] = useState([]);
 
-            // ORIGINAL QUESTION BANK - UNCHANGED
+            // EXPANDED QUESTION BANK - 60 QUESTIONS
             const questionBank = [
                 {id:1,topic:'socialeLegislation',subtopic:'arbeidsvoorwaarden',question:'Wat is de minimale opzegtermijn voor een uitzendovereenkomst van bepaalde duur?',options:['Geen opzegtermijn','3 dagen','7 dagen','14 dagen'],correct:0,explanation:'Voor uitzendovereenkomsten van bepaalde duur is er geen opzegtermijn vereist, tenzij anders overeengekomen in het contract.'},
                 {id:2,topic:'socialeLegislation',subtopic:'dimona',question:'Wanneer moet een DIMONA-aangifte gebeuren voor een uitzendkracht?',options:['Op het moment van tewerkstelling','Uiterlijk de dag vóór de tewerkstelling','Binnen 24 uur na de start','Binnen de week'],correct:1,explanation:'De DIMONA-aangifte moet gebeuren uiterlijk de dag vóór de effectieve tewerkstelling van de uitzendkracht.'},
@@ -479,17 +567,51 @@
                 {id:18,topic:'preventiebeleid',subtopic:'veiligheid',question:'Wie is aansprakelijk als een uitzendkracht een fout maakt die schade veroorzaakt?',options:['Altijd de uitzendkracht','Altijd het uitzendkantoor','Altijd de gebruiker','Afhankelijk van omstandigheden'],correct:3,explanation:'De aansprakelijkheid hangt af van verschillende factoren.'},
                 {id:19,topic:'preventiebeleid',subtopic:'veiligheid',question:'Mag een uitzendkracht alleen werken zonder toezicht op een gevaarlijke werkpost?',options:['Ja, als meerderjarig','Nee, nooit','Alleen na adequate opleiding','Alleen met toestemming Preventie en Interim'],correct:2,explanation:'Alleen werken mag na adequate opleiding en instructies.'},
                 {id:20,topic:'preventiebeleid',subtopic:'veiligheid',question:'Wat moet er gebeuren bij een bijna-ongeval (near miss)?',options:['Niets, geen schade','Enkel melden bij letsel','Rapporteren om herhaling te voorkomen','Alleen melden bij politie'],correct:2,explanation:'Bijna-ongevallen moeten gerapporteerd worden om herhaling te voorkomen.'},
+                {id:21,topic:'socialeLegislation',subtopic:'arbeidsvoorwaarden',question:'Wat is het maximale percentage dat mag worden ingehouden op het loon van een uitzendkracht voor beschadiging van materiaal?',options:['10%','20%','Het mag niet worden ingehouden','Volgens arbeidsreglement'],correct:2,explanation:'Er mag geen inhouding gebeuren op het loon voor schade, tenzij in zeer specifieke omstandigheden en met akkoord van de werknemer.'},
+                {id:22,topic:'socialeLegislation',subtopic:'dimona',question:'Moet een DIMONA-wijziging worden ingediend als de einddatum van een uitzendopdracht wijzigt?',options:['Nee, enkel bij nieuw contract','Ja, uiterlijk op de dag van wijziging','Alleen bij verlenging meer dan 1 maand','Alleen bij verkorting'],correct:1,explanation:'Elke wijziging van de einddatum moet gemeld worden via een DIMONA-wijziging.'},
+                {id:23,topic:'socialeLegislation',subtopic:'arbeidsvoorwaarden',question:'Hoeveel bedraagt de eindejaarspremie voor een uitzendkracht die een volledig jaar heeft gewerkt?',options:['Er is geen eindejaarspremie','Gelijk aan vaste werknemers in de sector','Alleen pro rata gewerkte dagen','Vrij te bepalen door uitzendkantoor'],correct:1,explanation:'Uitzendkrachten hebben recht op dezelfde eindejaarspremie als vergelijkbare vaste werknemers.'},
+                {id:24,topic:'preventiebeleid',subtopic:'veiligheid',question:'Wie betaalt de medische keuringen voor een uitzendkracht?',options:['De uitzendkracht zelf','Het uitzendkantoor','De gebruiker','Preventie en Interim'],correct:1,explanation:'Het uitzendkantoor als werkgever betaalt alle medische keuringen.'},
+                {id:25,topic:'socialeLegislation',subtopic:'arbeidsvoorwaarden',question:'Mag een minderjarige als uitzendkracht werken?',options:['Nee, absoluut verboden','Ja, vanaf 16 jaar met beperkingen','Ja, vanaf 15 jaar','Alleen in vakanties'],correct:1,explanation:'Minderjarigen vanaf 16 jaar mogen als uitzendkracht werken, maar niet in gevaarlijke functies.'},
+                {id:26,topic:'socialeLegislation',subtopic:'dimona',question:'Moet er een DIMONA-uitgifte worden gedaan bij het einde van een uitzendopdracht?',options:['Ja, altijd binnen 24 uur','Nee, de DIMONA-in vermeldt al de einddatum','Alleen bij vroegtijdig ontslag','Alleen bij contracten langer dan 3 maanden'],correct:1,explanation:'Er moet geen aparte DIMONA-uitgifte gebeuren als de einddatum al vermeld staat in de oorspronkelijke DIMONA.'},
+                {id:27,topic:'preventiebeleid',subtopic:'veiligheid',question:'Hoelang moet een gebruiker de risicoanalyse van werkposten bewaren?',options:['1 jaar','3 jaar','5 jaar','Permanent'],correct:2,explanation:'Risicoanalyses moeten minstens 5 jaar bewaard worden.'},
+                {id:28,topic:'socialeLegislation',subtopic:'arbeidsvoorwaarden',question:'Heeft een uitzendkracht recht op een anciënniteitspremie?',options:['Nee, alleen voor vaste contracten','Ja, bij dezelfde gebruiker','Ja, bij hetzelfde uitzendkantoor','Nee, nooit'],correct:2,explanation:'Anciënniteitspremies zijn van toepassing bij hetzelfde uitzendkantoor volgens de regels van het paritair comité.'},
+                {id:29,topic:'preventiebeleid',subtopic:'veiligheid',question:'Wat is de minimale inhoud van een veiligheidsinstructie voor een uitzendkracht?',options:['Alleen noodprocedures','Risicos, preventiemaatregelen en PBM','Alleen werkinstructies','Contactgegevens hulpdiensten'],correct:1,explanation:'Een veiligheidsinstructie moet alle risicos, preventiemaatregelen en het gebruik van PBM omvatten.'},
+                {id:30,topic:'socialeLegislation',subtopic:'arbeidsvoorwaarden',question:'Mag een uitzendkracht geweigerd worden op basis van leeftijd?',options:['Ja, onder 25 jaar','Ja, boven 50 jaar','Nee, dit is discriminatie','Alleen met geldige reden'],correct:2,explanation:'Weigering op basis van leeftijd is een vorm van discriminatie en verboden.'},
+                {id:31,topic:'socialeLegislation',subtopic:'dimona',question:'Binnen hoeveel tijd moet een DIMONA-fout worden gecorrigeerd?',options:['Onmiddellijk bij ontdekking','Binnen 24 uur','Binnen 1 week','Voor einde opdracht'],correct:0,explanation:'DIMONA-fouten moeten onmiddellijk worden gecorrigeerd zodra ze ontdekt worden.'},
+                {id:32,topic:'preventiebeleid',subtopic:'veiligheid',question:'Moet een werkpost geëvalueerd worden voordat een uitzendkracht er tewerkgesteld wordt?',options:['Nee, enkel voor vaste werknemers','Ja, altijd','Alleen bij nieuwe werkposten','Alleen bij hoog risico'],correct:1,explanation:'Elke werkpost moet geëvalueerd worden op risicos voordat er iemand tewerkgesteld wordt.'},
+                {id:33,topic:'socialeLegislation',subtopic:'arbeidsvoorwaarden',question:'Hoeveel rustperiode moet een uitzendkracht krijgen tussen twee werkdagen?',options:['8 uur','11 uur','12 uur','Geen verplichting'],correct:1,explanation:'De wettelijke rustperiode tussen twee werkdagen is 11 uur.'},
+                {id:34,topic:'preventiebeleid',subtopic:'veiligheid',question:'Wie voert het toezicht uit op de naleving van preventiebeleid bij uitzendarbeid?',options:['Preventie en Interim','Toezicht Welzijn op het Werk','Het uitzendkantoor','De gebruiker'],correct:1,explanation:'Het Toezicht Welzijn op het Werk is de overheidsinstantie die toezicht houdt.'},
+                {id:35,topic:'socialeLegislation',subtopic:'arbeidsvoorwaarden',question:'Heeft een uitzendkracht recht op maaltijdcheques?',options:['Nee, nooit','Alleen bij contract langer dan 6 maanden','Ja, als vergelijkbare vaste werknemers dit krijgen','Vrije keuze werkgever'],correct:2,explanation:'Uitzendkrachten hebben recht op dezelfde voordelen als vergelijkbare vaste werknemers, inclusief maaltijdcheques.'},
+                {id:36,topic:'socialeLegislation',subtopic:'dimona',question:'Moet een DIMONA worden ingediend voor een proefdag van een kandidaat-uitzendkracht?',options:['Nee, het is geen officiële tewerkstelling','Ja, voor elke vorm van tewerkstelling','Alleen bij betaalde proefdag','Alleen bij proefdag langer dan 4 uur'],correct:1,explanation:'Ook voor proefperiodes moet een DIMONA worden ingediend.'},
+                {id:37,topic:'preventiebeleid',subtopic:'veiligheid',question:'Wat is het doel van Preventie en Interim?',options:['Controle van uitzendkantoren','Ondersteuning bij preventiebeleid in uitzendsector','Afhandeling arbeidsconflicten','Medische keuringen uitvoeren'],correct:1,explanation:'Preventie en Interim ondersteunt uitzendkantoren bij het implementeren van preventiebeleid.'},
+                {id:38,topic:'socialeLegislation',subtopic:'arbeidsvoorwaarden',question:'Mag een uitzendkracht verplicht worden om eigen kledij te dragen met bedrijfslogo?',options:['Ja, altijd','Nee, werkgever moet kledij verstrekken','Alleen met vergoeding','Volgens sectorakkoord'],correct:1,explanation:'Als specifieke werkkledij vereist is, moet de werkgever deze kosteloos verstrekken.'},
+                {id:39,topic:'preventiebeleid',subtopic:'veiligheid',question:'Hoe vaak moet een risicoanalyse worden geactualiseerd?',options:['Jaarlijks','Bij elke wijziging van de arbeidsomstandigheden','Om de 5 jaar','Nooit, tenzij incident'],correct:1,explanation:'Een risicoanalyse moet worden geactualiseerd telkens er wijzigingen zijn in de arbeidsomstandigheden.'},
+                {id:40,topic:'socialeLegislation',subtopic:'arbeidsvoorwaarden',question:'Wat is de maximale arbeidsduur per week voor een uitzendkracht?',options:['35 uur','38 uur','40 uur','Afhankelijk van de sector'],correct:3,explanation:'De maximale arbeidsduur hangt af van de sector waarin de uitzendkracht tewerkgesteld wordt.'},
+                {id:41,topic:'socialeLegislation',subtopic:'dimona',question:'Kunnen retroactieve DIMONA-aangiftes worden gedaan?',options:['Nee, absoluut niet','Ja, tot 3 maanden terug','Alleen met toestemming RSZ','In uitzonderlijke gevallen met boete'],correct:3,explanation:'Retroactieve aangiftes zijn uitzonderlijk mogelijk maar kunnen leiden tot administratieve boetes.'},
+                {id:42,topic:'preventiebeleid',subtopic:'veiligheid',question:'Welke opleidingen moet een uitzendkracht krijgen voor aanvang?',options:['Alleen technische vaardigheden','Veiligheid, gebruik PBM en procedures','Alleen bij gevaarlijke functies','Enkel indien gevraagd door uitzendkracht'],correct:1,explanation:'Elke uitzendkracht moet een veiligheidsopleiding krijgen, ongeacht de functie.'},
+                {id:43,topic:'socialeLegislation',subtopic:'arbeidsvoorwaarden',question:'Mag het loon van een uitzendkracht lager zijn dan het minimumloon?',options:['Ja, eerste 3 maanden','Ja, als starter onder 21 jaar','Nee, nooit','Alleen bij halftijds werk'],correct:1,explanation:'Voor jongeren onder 21 jaar gelden lagere minimumlonen afhankelijk van leeftijd.'},
+                {id:44,topic:'preventiebeleid',subtopic:'veiligheid',question:'Wie is eindverantwoordelijk voor de veiligheid van een uitzendkracht op de werkplek?',options:['Het uitzendkantoor','De gebruiker','Beiden delen verantwoordelijkheid','De uitzendkracht zelf'],correct:2,explanation:'Zowel het uitzendkantoor als de gebruiker hebben gedeelde verantwoordelijkheid voor de veiligheid.'},
+                {id:45,topic:'socialeLegislation',subtopic:'arbeidsvoorwaarden',question:'Heeft een uitzendkracht recht op betaald educatief verlof?',options:['Nee, alleen vaste werknemers','Ja, onder dezelfde voorwaarden','Alleen na 1 jaar anciënniteit','Alleen voor beroepsgerichte opleidingen'],correct:1,explanation:'Uitzendkrachten hebben dezelfde rechten op educatief verlof als vaste werknemers.'},
+                {id:46,topic:'socialeLegislation',subtopic:'dimona',question:'Wat is de boete voor het niet-indienen van een DIMONA?',options:['€100 - €500','€500 - €1000','€600 - €6000','Afhankelijk van aantal inbreuken'],correct:2,explanation:'Administratieve boetes variëren van €600 tot €6000 afhankelijk van de ernst en het aantal inbreuken.'},
+                {id:47,topic:'preventiebeleid',subtopic:'veiligheid',question:'Moet een werkpost een nooduitgang hebben voor uitzendkrachten?',options:['Alleen bij meer dan 10 werknemers','Ja, volgens brandveiligheidsregels','Alleen in industriële omgevingen','Nee, niet specifiek vereist'],correct:1,explanation:'Alle werkplekken moeten voldoen aan de brandveiligheidsvoorschriften, inclusief nooduitgangen.'},
+                {id:48,topic:'socialeLegislation',subtopic:'arbeidsvoorwaarden',question:'Mag een gebruiker rechtstreeks een uitzendkracht contacteren voor verlengingen?',options:['Ja, zonder beperkingen','Nee, altijd via uitzendkantoor','Alleen met toestemming uitzendkracht','Alleen na 3 maanden samenwerking'],correct:1,explanation:'Alle communicatie over contractzaken moet via het uitzendkantoor verlopen.'},
+                {id:49,topic:'preventiebeleid',subtopic:'veiligheid',question:'Hoelang moet een gebruiker ongevalgegevens bijhouden?',options:['1 jaar','3 jaar','5 jaar','10 jaar'],correct:3,explanation:'Ongevalgegevens moeten minimaal 10 jaar bewaard worden.'},
+                {id:50,topic:'socialeLegislation',subtopic:'arbeidsvoorwaarden',question:'Kan een uitzendkracht zelf ontslag nemen tijdens een contract van bepaalde duur?',options:['Nee, contract moet worden uitgediend','Ja, met opzegtermijn','Ja, maar met schadevergoeding','Alleen om dringende redenen'],correct:3,explanation:'Een uitzendkracht kan tijdens een contract van bepaalde duur alleen ontslag nemen om dringende redenen.'},
+                {id:51,topic:'socialeLegislation',subtopic:'dimona',question:'Moet voor elke nieuwe opdracht bij dezelfde gebruiker een nieuwe DIMONA worden ingediend?',options:['Nee, enkel bij eerste opdracht','Ja, voor elke nieuwe opdracht','Alleen bij wijziging van functie','Alleen na pauze van 1 maand'],correct:1,explanation:'Voor elke nieuwe tewerkstelling moet een afzonderlijke DIMONA worden ingediend.'},
+                {id:52,topic:'preventiebeleid',subtopic:'veiligheid',question:'Wat moet er gebeuren bij weigering van een uitzendkracht om PBM te dragen?',options:['Onmiddellijk ontslag','Waarschuwing en herevaluatie','Werkweigering door gebruiker','Boete voor uitzendkracht'],correct:1,explanation:'Bij weigering moet eerst worden nagegaan waarom en eventueel heropgeleid, bij aanhoudende weigering kan dit leiden tot sancties.'},
+                {id:53,topic:'socialeLegislation',subtopic:'arbeidsvoorwaarden',question:'Heeft een uitzendkracht recht op feestdagenbetaling?',options:['Nee, alleen vaste werknemers','Ja, onder bepaalde voorwaarden','Alleen na 6 maanden','Alleen voor erkende feestdagen'],correct:1,explanation:'Uitzendkrachten hebben recht op betaling van feestdagen die vallen tijdens hun tewerkstelling.'},
+                {id:54,topic:'preventiebeleid',subtopic:'veiligheid',question:'Wie mag een arbeidsongeval onderzoeken bij een uitzendkracht?',options:['Alleen de gebruiker','Alleen het uitzendkantoor','Beide partijen en inspectie','Alleen Preventie en Interim'],correct:2,explanation:'Beide partijen hebben het recht en de plicht om het ongeval te onderzoeken, evenals de arbeidsinspectie.'},
+                {id:55,topic:'socialeLegislation',subtopic:'arbeidsvoorwaarden',question:'Mag een uitzendkracht nachtarbeid verrichten?',options:['Nee, verboden','Ja, onder strikte voorwaarden','Alleen met persoonlijke toestemming','Alleen voor mannen boven 21'],correct:1,explanation:'Nachtarbeid is toegestaan maar onderhevig aan strikte regelgeving en eventuele sectorbeperkingen.'},
+                {id:56,topic:'socialeLegislation',subtopic:'dimona',question:'Wat gebeurt er bij een foutieve DIMONA voor een andere persoon?',options:['Administratieve boete','Gevangenisstraf mogelijk','Enkel correctie vereist','Waarschuwing'],correct:0,explanation:'Een foutieve DIMONA kan leiden tot administratieve sancties.'},
+                {id:57,topic:'preventiebeleid',subtopic:'veiligheid',question:'Moet een uitzendkracht deelnemen aan evacuatieoefeningen bij de gebruiker?',options:['Nee, alleen vaste werknemers','Alleen bij opdrachten langer dan 6 maanden','Ja, zoals alle andere werknemers','Alleen als vrijwilliger'],correct:2,explanation:'Alle aanwezigen op de werkplek moeten deelnemen aan evacuatieoefeningen.'},
+                {id:58,topic:'socialeLegislation',subtopic:'arbeidsvoorwaarden',question:'Kan een gebruiker een uitzendkracht in vaste dienst nemen tijdens de uitzendopdracht?',options:['Nee, verboden','Ja, met akkoord uitzendkantoor','Alleen na einde contract','Alleen na 6 maanden'],correct:1,explanation:'Een overname is mogelijk met akkoord van het uitzendkantoor en eventueel tegen vergoeding.'},
+                {id:59,topic:'preventiebeleid',subtopic:'veiligheid',question:'Welke informatie moet uitgewisseld worden tussen uitzendkantoor en gebruiker vóór tewerkstelling?',options:['Alleen functieomschrijving','Risico-evaluatie, preventiemaatregelen en competenties','Alleen medische geschiktheid','Alleen arbeidsvoorwaarden'],correct:1,explanation:'Voor de tewerkstelling moet er een uitwisseling zijn van alle veiligheidsinformatie en competentievereisten.'},
+                {id:60,topic:'socialeLegislation',subtopic:'arbeidsvoorwaarden',question:'Wat is de geldigheidsduur van een uitzendarbeidsovereenkomst voor onbepaalde duur?',options:['Onbeperkt','Maximaal 1 jaar','Maximaal 2 jaar','Tot ontslag door één van de partijen'],correct:3,explanation:'Een contract voor onbepaalde duur blijft geldig tot het wordt beëindigd door één van de partijen met opzegging.'}
             ];
 
             const getFilteredQuestions = (topic) => {
                 if (topic === 'all') return questionBank;
-                
-                // Check if it's a main topic
-                const mainTopicQuestions = questionBank.filter(q => q.topic === topic);
-                if (mainTopicQuestions.length > 0) return mainTopicQuestions;
-                
-                // Otherwise it's a subtopic
-                return questionBank.filter(q => q.subtopic === topic);
+                return questionBank.filter(q => q.topic === topic || q.subtopic === topic);
             };
 
             const shuffleArray = (array) => {
@@ -512,6 +634,7 @@
                 setSelectedAnswer(null);
                 setShowFeedback(false);
                 setQuizResults(selectedQuestions);
+                setAnswers([]);
                 setCurrentView('quiz');
                 setSidebarOpen(false);
             };
@@ -524,18 +647,13 @@
                 const question = quizResults[currentQuestion];
                 const isCorrect = selectedAnswer === question.correct;
                 
-                setPerformance(prev => ({
-                    ...prev,
-                    [question.topic]: {
-                        correct: prev[question.topic].correct + (isCorrect ? 1 : 0),
-                        total: prev[question.topic].total + 1
-                    },
-                    [question.subtopic]: {
-                        correct: (prev[question.subtopic]?.correct || 0) + (isCorrect ? 1 : 0),
-                        total: (prev[question.subtopic]?.total || 0) + 1
-                    }
-                }));
-                
+                setAnswers([...answers, { 
+                    questionId: question.id, 
+                    selectedAnswer, 
+                    correct: isCorrect,
+                    topic: question.topic,
+                    subtopic: question.subtopic 
+                }]);
                 setShowFeedback(true);
             };
 
@@ -545,37 +663,59 @@
                     setSelectedAnswer(null);
                     setShowFeedback(false);
                 } else {
+                    // Save quiz result
+                    const correct = answers.filter(a => a.correct).length + (selectedAnswer === quizResults[currentQuestion].correct ? 1 : 0);
+                    const total = quizResults.length;
+                    saveQuizResult({
+                        topic: quizTopic,
+                        correct,
+                        total,
+                        percentage: Math.round((correct / total) * 100),
+                        answers: [...answers, { 
+                            questionId: quizResults[currentQuestion].id, 
+                            selectedAnswer, 
+                            correct: selectedAnswer === quizResults[currentQuestion].correct,
+                            topic: quizResults[currentQuestion].topic,
+                            subtopic: quizResults[currentQuestion].subtopic 
+                        }]
+                    });
                     setCurrentView('results');
                 }
             };
 
             const getQuizScore = () => {
-                let correct = 0;
-                quizResults.forEach((q, idx) => {
-                    if (idx < currentQuestion || (idx === currentQuestion && showFeedback)) {
-                        const questionPerf = performance[q.subtopic] || performance[q.topic];
-                        if (questionPerf.total > 0) correct++;
-                    }
-                });
-                return { correct, total: showFeedback ? currentQuestion + 1 : currentQuestion };
-            };
-
-            const getOverallScore = (topic) => {
-                if (performance[topic].total === 0) return 0;
-                return Math.round((performance[topic].correct / performance[topic].total) * 100);
+                const correct = answers.filter(a => a.correct).length;
+                return { correct, total: answers.length };
             };
 
             // START PAGE
             const renderStartPage = () => {
+                const stats = calculateStats(getQuizHistory());
+                
                 return (
                     <div className="min-h-screen" style={{ background: 'linear-gradient(to bottom, #f5f5f5, white)' }}>
                         <div className="max-w-7xl mx-auto p-4 md:p-8">
                             <div className="text-center mb-12">
                                 <h1 className="text-5xl font-bold mb-2" style={{ color: '#e2001a' }}>Federgon</h1>
                                 <p className="text-xl" style={{ color: '#495d67' }}>Examen voorbereiding - Sociale wetgeving uitzendarbeid</p>
+                                <p className="text-sm mt-2" style={{ color: '#A5A5A5' }}>Nu met 60 oefenvragen + voortgangsrapportage!</p>
                             </div>
 
-                            <div className="grid md:grid-cols-2 gap-6 mb-12">
+                            {stats.totalQuizzes > 0 && (
+                                <div className="mb-8 p-4 rounded-lg text-center" style={{ backgroundColor: stats.readyForExam ? '#2EC4B615' : '#FFB40015', border: `2px solid ${stats.readyForExam ? '#2EC4B6' : '#FFB400'}` }}>
+                                    <div className="font-bold" style={{ color: '#2F3336' }}>
+                                        {stats.readyForExam ? '🎉 Je bent klaar voor het examen!' : `💪 Je gemiddelde: ${stats.overallPercentage}%`}
+                                    </div>
+                                    <p className="text-sm mt-1" style={{ color: '#495d67' }}>
+                                        {stats.readyForExam 
+                                            ? `${stats.totalQuizzes} quizzen voltooid met een gemiddelde van ${stats.overallPercentage}%`
+                                            : `${stats.totalQuizzes} quizzen voltooid • ${stats.totalQuestions} vragen beantwoord`
+                                        }
+                                    </p>
+                                </div>
+                            )}
+
+                            <div className="grid md:grid-cols-3 gap-6 mb-12">
                                 <button
                                     onClick={() => setCurrentView('setup')}
                                     className="btn-primary p-8 rounded-lg shadow-lg hover:shadow-xl transition-all transform hover:scale-105 text-white text-center"
@@ -583,6 +723,15 @@
                                     <div className="text-4xl mb-3">🎯</div>
                                     <h3 className="text-2xl font-bold mb-2">Begin oefenen</h3>
                                     <p className="opacity-90">Start een quiz naar keuze</p>
+                                </button>
+                                <button
+                                    onClick={() => setCurrentView('dashboard')}
+                                    style={{ backgroundColor: '#FFB400' }}
+                                    className="p-8 rounded-lg shadow-lg hover:shadow-xl transition-all transform hover:scale-105 text-white text-center hover:opacity-90"
+                                >
+                                    <div className="text-4xl mb-3">📊</div>
+                                    <h3 className="text-2xl font-bold mb-2">Mijn Voortgang</h3>
+                                    <p className="opacity-90">Bekijk je prestaties</p>
                                 </button>
                                 <button
                                     onClick={() => setCurrentView('pdf')}
@@ -634,16 +783,10 @@
                         <div className="flex-1 lg:ml-80">
                             <div className="p-4 lg:p-8 max-w-4xl mx-auto w-full">
                                 <div className="flex items-center justify-between mb-6">
-                                    <button
-                                        onClick={() => setSidebarOpen(!sidebarOpen)}
-                                        className="lg:hidden p-2 btn-primary text-white rounded"
-                                    >
+                                    <button onClick={() => setSidebarOpen(!sidebarOpen)} className="lg:hidden p-2 btn-primary text-white rounded">
                                         <Menu size={24} />
                                     </button>
-                                    <button
-                                        onClick={() => setCurrentView('start')}
-                                        className="px-4 py-2 btn-secondary text-white rounded hover:opacity-90"
-                                    >
+                                    <button onClick={() => setCurrentView('start')} className="px-4 py-2 btn-secondary text-white rounded hover:opacity-90">
                                         ← Terug
                                     </button>
                                     <div className="text-sm font-medium" style={{ color: '#495d67' }}>
@@ -653,13 +796,7 @@
 
                                 <div className="mb-6">
                                     <div className="w-full rounded-full h-2" style={{ backgroundColor: '#A5A5A5' }}>
-                                        <div
-                                            className="h-2 rounded-full transition-all duration-300"
-                                            style={{ 
-                                                width: `${((currentQuestion + 1) / quizResults.length) * 100}%`,
-                                                backgroundColor: '#e2001a'
-                                            }}
-                                        />
+                                        <div className="h-2 rounded-full transition-all duration-300" style={{ width: `${((currentQuestion + 1) / quizResults.length) * 100}%`, backgroundColor: '#e2001a' }} />
                                     </div>
                                 </div>
 
@@ -674,31 +811,7 @@
 
                                     <div className="space-y-3 mb-6">
                                         {question.options.map((option, index) => (
-                                            <button
-                                                key={index}
-                                                onClick={() => handleAnswerSelect(index)}
-                                                disabled={showFeedback}
-                                                className={`w-full p-4 text-left rounded-lg border-2 transition-all font-medium ${
-                                                    showFeedback ? 'cursor-not-allowed' : 'cursor-pointer'
-                                                }`}
-                                                style={{
-                                                    borderColor: selectedAnswer === index
-                                                        ? showFeedback
-                                                            ? index === question.correct ? '#2EC4B6' : '#e2001a'
-                                                            : '#e2001a'
-                                                        : showFeedback && index === question.correct
-                                                        ? '#2EC4B6'
-                                                        : '#A5A5A5',
-                                                    backgroundColor: selectedAnswer === index
-                                                        ? showFeedback
-                                                            ? index === question.correct ? '#2EC4B615' : '#e2001a15'
-                                                            : '#e2001a15'
-                                                        : showFeedback && index === question.correct
-                                                        ? '#2EC4B615'
-                                                        : 'white',
-                                                    color: '#2F3336'
-                                                }}
-                                            >
+                                            <button key={index} onClick={() => handleAnswerSelect(index)} disabled={showFeedback} className={`w-full p-4 text-left rounded-lg border-2 transition-all font-medium ${showFeedback ? 'cursor-not-allowed' : 'cursor-pointer'}`} style={{ borderColor: selectedAnswer === index ? showFeedback ? index === question.correct ? '#2EC4B6' : '#e2001a' : '#e2001a' : showFeedback && index === question.correct ? '#2EC4B6' : '#A5A5A5', backgroundColor: selectedAnswer === index ? showFeedback ? index === question.correct ? '#2EC4B615' : '#e2001a15' : '#e2001a15' : showFeedback && index === question.correct ? '#2EC4B615' : 'white', color: '#2F3336' }}>
                                                 <div className="flex items-center justify-between">
                                                     <span>{option}</span>
                                                     {showFeedback && index === question.correct && <CheckCircle size={24} style={{ color: '#2EC4B6' }} />}
@@ -709,15 +822,9 @@
                                     </div>
 
                                     {showFeedback && (
-                                        <div className="p-4 rounded-lg mb-6 border-2" style={{ 
-                                            backgroundColor: isCorrect ? '#2EC4B615' : '#e2001a15',
-                                            borderColor: isCorrect ? '#2EC4B6' : '#e2001a'
-                                        }}>
+                                        <div className="p-4 rounded-lg mb-6 border-2" style={{ backgroundColor: isCorrect ? '#2EC4B615' : '#e2001a15', borderColor: isCorrect ? '#2EC4B6' : '#e2001a' }}>
                                             <div className="flex items-start">
-                                                {isCorrect ? 
-                                                    <CheckCircle size={20} style={{ color: '#2EC4B6' }} className="mr-2 mt-1" /> : 
-                                                    <XCircle size={20} style={{ color: '#e2001a' }} className="mr-2 mt-1" />
-                                                }
+                                                {isCorrect ? <CheckCircle size={20} style={{ color: '#2EC4B6' }} className="mr-2 mt-1" /> : <XCircle size={20} style={{ color: '#e2001a' }} className="mr-2 mt-1" />}
                                                 <div>
                                                     <div className="font-semibold" style={{ color: '#2F3336' }}>
                                                         {isCorrect ? 'Correct!' : 'Niet correct'}
@@ -730,19 +837,11 @@
 
                                     <div className="flex justify-end">
                                         {!showFeedback ? (
-                                            <button
-                                                onClick={handleSubmitAnswer}
-                                                disabled={selectedAnswer === null}
-                                                className={`px-6 py-3 rounded-lg font-medium ${selectedAnswer !== null ? 'btn-primary text-white hover:opacity-90' : 'opacity-50 cursor-not-allowed'}`}
-                                                style={{ backgroundColor: selectedAnswer !== null ? '#e2001a' : '#A5A5A5' }}
-                                            >
+                                            <button onClick={handleSubmitAnswer} disabled={selectedAnswer === null} className={`px-6 py-3 rounded-lg font-medium ${selectedAnswer !== null ? 'btn-primary text-white hover:opacity-90' : 'opacity-50 cursor-not-allowed'}`} style={{ backgroundColor: selectedAnswer !== null ? '#e2001a' : '#A5A5A5' }}>
                                                 Controleer antwoord
                                             </button>
                                         ) : (
-                                            <button
-                                                onClick={handleNextQuestion}
-                                                className="px-6 py-3 btn-primary text-white rounded-lg font-medium hover:opacity-90"
-                                            >
+                                            <button onClick={handleNextQuestion} className="px-6 py-3 btn-primary text-white rounded-lg font-medium hover:opacity-90">
                                                 {currentQuestion < quizResults.length - 1 ? 'Volgende vraag →' : 'Bekijk resultaten'}
                                             </button>
                                         )}
@@ -756,12 +855,8 @@
 
             // RESULTS PAGE
             const renderResults = () => {
-                const totalCorrect = quizResults.filter((q, idx) => {
-                    const perf = performance[q.subtopic] || performance[q.topic];
-                    return perf && perf.correct > 0;
-                }).length;
-                
-                const percentage = Math.round((totalCorrect / quizResults.length) * 100);
+                const score = getQuizScore();
+                const percentage = Math.round((score.correct / score.total) * 100);
                 const passed = percentage >= 75;
                 
                 return (
@@ -777,7 +872,7 @@
                                         </div>
                                     </div>
                                     <div className="text-2xl font-semibold mb-2" style={{ color: '#2F3336' }}>
-                                        {totalCorrect} van de {quizResults.length} correct
+                                        {score.correct} van de {score.total} correct
                                     </div>
                                     {passed ? (
                                         <div className="text-xl font-bold flex items-center justify-center gap-2" style={{ color: '#2EC4B6' }}>
@@ -791,16 +886,13 @@
                                 </div>
 
                                 <div className="space-y-4 text-center">
-                                    <button
-                                        onClick={() => setCurrentView('start')}
-                                        className="px-8 py-3 btn-primary text-white rounded-lg font-semibold hover:opacity-90 mr-3"
-                                    >
+                                    <button onClick={() => setCurrentView('dashboard')} className="px-8 py-3 text-white rounded-lg font-semibold hover:opacity-90 mr-3" style={{ backgroundColor: '#FFB400' }}>
+                                        📊 Bekijk voortgang
+                                    </button>
+                                    <button onClick={() => setCurrentView('start')} className="px-8 py-3 btn-primary text-white rounded-lg font-semibold hover:opacity-90 mr-3">
                                         Terug naar home
                                     </button>
-                                    <button
-                                        onClick={() => setCurrentView('setup')}
-                                        className="px-8 py-3 btn-secondary text-white rounded-lg font-semibold hover:opacity-90"
-                                    >
+                                    <button onClick={() => setCurrentView('setup')} className="px-8 py-3 btn-secondary text-white rounded-lg font-semibold hover:opacity-90">
                                         Nieuwe quiz
                                     </button>
                                 </div>
@@ -829,6 +921,7 @@
                     {currentView === 'setup' && <QuizSetup onStart={startQuiz} onBack={() => setCurrentView('start')} />}
                     {currentView === 'quiz' && renderQuiz()}
                     {currentView === 'results' && renderResults()}
+                    {currentView === 'dashboard' && <PerformanceDashboard onBack={() => setCurrentView('start')} />}
                     {currentView === 'pdf' && renderPDF()}
                 </div>
             );
